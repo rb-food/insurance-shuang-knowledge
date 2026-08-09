@@ -1,0 +1,2358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>保险服务通话知识库</title>
+<style>
+/* ========== Reset & Base ========== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg-primary: #0d1117;
+  --bg-secondary: #151b23;
+  --bg-tertiary: #1c2330;
+  --bg-hover: #212830;
+  --bg-card: #1a212b;
+  --bg-card-hover: #1f2632;
+  --bg-active: rgba(88,166,255,0.10);
+  --bg-active-solid: #1b283d;
+  --border-color: #2c333b;
+  --border-light: #3d444d;
+  --text-primary: #f0f6fc;
+  --text-secondary: #9fa8b4;
+  --text-muted: #6e7c8a;
+  --accent-blue: #58a6ff;
+  --accent-blue-dim: #1f6feb;
+  --accent-green: #3fb950;
+  --accent-orange: #d29922;
+  --accent-purple: #bc8cff;
+  --accent-red: #f85149;
+  --accent-teal: #39d0d8;
+  --tag-flow: #58a6ff;
+  --tag-knowledge: #bc8cff;
+  --tag-qa: #3fb950;
+  --tag-scene: #d29922;
+  --tag-policy: #39d0d8;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.45);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.55);
+  --radius: 10px;
+  --radius-lg: 14px;
+  --sidebar-w: 300px;
+  --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ========== Scrollbar ========== */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ========== Top Header ========== */
+.header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 60px; display: flex; align-items: center; gap: 18px;
+  padding: 0 22px 0 24px;
+  background: rgba(21,27,35,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.35);
+}
+.header-logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.header-logo .icon {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent-blue-dim), var(--accent-purple));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; box-shadow: 0 2px 8px rgba(88,166,255,0.25);
+}
+.header-logo .title { font-size: 18px; font-weight: 800; letter-spacing: 0.3px; }
+.header-logo .title .sub { font-size: 12px; font-weight: 500; color: var(--text-muted); margin-left: 6px; }
+
+/* Search */
+.search-wrap { flex: 1; max-width: 520px; position: relative; margin-left: auto; }
+.search-wrap input {
+  width: 100%; height: 38px; border-radius: 10px;
+  background: var(--bg-tertiary); border: 1px solid var(--border-color);
+  color: var(--text-primary); font-size: 14px; padding: 0 38px 0 40px;
+  transition: var(--transition);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.15);
+}
+.search-wrap input:focus {
+  outline: none; border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(88,166,255,0.12), inset 0 1px 2px rgba(0,0,0,0.15);
+  background: var(--bg-card);
+}
+.search-wrap input::placeholder { color: var(--text-muted); }
+.search-wrap .search-icon {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--text-muted); font-size: 14px; pointer-events: none;
+}
+.search-wrap .clear-btn {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--text-muted); cursor: pointer; font-size: 14px;
+  display: none; transition: var(--transition);
+}
+.search-wrap .clear-btn:hover { color: var(--text-primary); }
+
+/* Header actions */
+.header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.header-btn {
+  height: 38px; padding: 0 14px; border-radius: 10px;
+  background: var(--bg-card); border: 1px solid var(--border-color);
+  color: var(--text-secondary); cursor: pointer; font-size: 13px; font-weight: 500;
+  display: flex; align-items: center; gap: 6px; transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+.header-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); border-color: var(--border-light); }
+.header-btn.active {
+  background: rgba(210,153,34,0.12); border-color: rgba(210,153,34,0.4); color: var(--accent-orange);
+}
+.header-btn .count { font-size: 11px; background: var(--accent-blue-dim); color: #fff; padding: 2px 7px; border-radius: 10px; font-weight: 600; }
+.header-btn.active .count { background: var(--accent-orange); }
+.sidebar-toggle { display: none; }
+
+/* ========== Layout ========== */
+.layout { display: flex; padding-top: 60px; min-height: 100vh; }
+
+/* Sidebar */
+.sidebar {
+  position: fixed; top: 60px; left: 0; bottom: 0; width: var(--sidebar-w);
+  background: var(--bg-secondary); border-right: 1px solid var(--border-color);
+  overflow-y: auto; z-index: 50; transition: var(--transition);
+  display: flex; flex-direction: column;
+}
+
+/* Sidebar Tree */
+.sidebar-tree {
+  flex: 1; overflow-y: auto; padding: 12px 14px 40px;
+}
+.tree-group {
+  margin-bottom: 16px;
+}
+.tree-group-header {
+  padding: 8px 12px 10px;
+  font-size: 10px; font-weight: 800;
+  color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;
+  display: flex; align-items: center; gap: 8px;
+}
+.tree-group-header::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, var(--border-color), transparent);
+}
+.section-node {
+  margin-bottom: 10px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid transparent;
+  overflow: hidden;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+.section-node:hover {
+  border-color: var(--border-light);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+.section-node.active {
+  border-color: var(--border-light);
+  background: var(--bg-active-solid);
+  box-shadow: 0 0 0 1px rgba(88,166,255,0.15), var(--shadow-md);
+}
+.section-node.expanded {
+  border-color: var(--border-light);
+  background: var(--bg-card-hover);
+}
+.section-node.active.expanded {
+  border-color: var(--border-light);
+  background: var(--bg-active-solid);
+}
+
+/* Per-section accent indicator on left border */
+.section-node[data-tag-color="tag-flow"] { --node-accent: var(--tag-flow); }
+.section-node[data-tag-color="tag-knowledge"] { --node-accent: var(--tag-knowledge); }
+.section-node[data-tag-color="tag-qa"] { --node-accent: var(--tag-qa); }
+.section-node[data-tag-color="tag-scene"] { --node-accent: var(--tag-scene); }
+.section-node[data-tag-color="tag-policy"] { --node-accent: var(--tag-policy); }
+
+.section-node.active {
+  border-left: 3px solid var(--node-accent);
+}
+.section-node.expanded {
+  border-left: 3px solid rgba(255,255,255,0.08);
+}
+.section-node.active.expanded {
+  border-left: 3px solid var(--node-accent);
+}
+
+.section-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 16px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 15px; font-weight: 700; color: var(--text-primary);
+  user-select: none;
+}
+.section-node.empty > .section-header { color: var(--text-muted); opacity: 0.75; }
+.section-header .section-icon { font-size: 18px; flex-shrink: 0; }
+.section-header .section-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.section-header .section-count {
+  font-size: 12px; font-weight: 700; color: var(--text-secondary); flex-shrink: 0;
+  background: var(--bg-tertiary); padding: 3px 10px; border-radius: 20px;
+  border: 1px solid var(--border-color);
+}
+.section-node.active > .section-header .section-count { color: var(--accent-blue); border-color: rgba(88,166,255,0.3); background: rgba(88,166,255,0.1); }
+.section-node.empty > .section-header .section-count { background: var(--bg-hover); color: var(--text-muted); border-color: transparent; }
+.section-children {
+  display: none; overflow: hidden;
+  background: rgba(0,0,0,0.10);
+  border-top: 1px solid var(--border-color);
+}
+.section-node.expanded > .section-children { display: block; }
+
+/* Child items in sidebar tree */
+.nav-items { padding: 6px 0; }
+.nav-item {
+  display: block; font-size: 13px; color: var(--text-secondary);
+  transition: var(--transition); position: relative;
+}
+.nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text-primary); }
+.nav-item.active { background: var(--bg-active); }
+.nav-item.active > .nav-item-row { color: var(--accent-blue); }
+.nav-item-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 16px 9px 52px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: var(--transition);
+}
+.nav-item.active > .nav-item-row { border-left-color: var(--accent-blue); }
+.nav-item-header {
+  display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;
+}
+.nav-item .tag-dot {
+  width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
+}
+.nav-item-title {
+  flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-weight: 500;
+}
+.nav-item .fav-star {
+  font-size: 12px; color: var(--text-muted);
+  opacity: 0; transition: var(--transition); flex-shrink: 0;
+}
+.nav-item.favorited .fav-star { opacity: 1; color: var(--accent-orange); }
+.nav-item:hover .fav-star { opacity: 0.6; }
+.nav-item.favorited:hover .fav-star { opacity: 1; }
+
+/* Tag colors */
+.tag-flow { background: var(--tag-flow); }
+.tag-knowledge { background: var(--tag-knowledge); }
+.tag-qa { background: var(--tag-qa); }
+.tag-scene { background: var(--tag-scene); }
+.tag-policy { background: var(--tag-policy); }
+
+/* ========== Main Content ========== */
+.main {
+  flex: 1; margin-left: var(--sidebar-w);
+  padding: 28px 36px 100px; max-width: 1100px;
+}
+
+/* Page container */
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.35s ease; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Section Title */
+.section-title-block {
+  margin-bottom: 28px; padding: 24px 26px;
+  background: var(--bg-card); border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+.section-title-block h2 {
+  font-size: 24px; font-weight: 800; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 12px;
+}
+.section-title-block .desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+.section-title-block .badge {
+  display: inline-block; padding: 4px 12px; border-radius: 20px;
+  font-size: 12px; font-weight: 700; margin-left: 10px;
+}
+
+/* Flow Steps — clean timeline */
+.flow-container { position: relative; padding-left: 6px; }
+.flow-step {
+  display: flex; gap: 18px; margin-bottom: 0; position: relative;
+}
+.flow-step .step-marker {
+  flex-shrink: 0; width: 36px; display: flex; flex-direction: column; align-items: center;
+}
+.flow-step .step-num {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--bg-card); border: 2px solid var(--accent-blue);
+  color: var(--accent-blue); font-size: 13px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2; position: relative;
+  box-shadow: 0 0 0 4px var(--bg-primary), 0 0 10px rgba(88,166,255,0.18);
+}
+.flow-step:not(:last-child) .step-line {
+  width: 2px; flex: 1; min-height: 20px;
+  background: var(--border-light); margin-top: 4px;
+}
+.flow-step .step-content { flex: 1; padding-bottom: 28px; }
+
+/* Step card */
+.step-card {
+  background: var(--bg-card); border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg); padding: 18px 22px;
+  box-shadow: var(--shadow-sm); transition: var(--transition);
+}
+.step-card:hover {
+  border-color: var(--border-light);
+  box-shadow: var(--shadow-md);
+}
+.step-card-header {
+  margin-bottom: 14px; padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+.step-card-header h3 {
+  font-size: 17px; font-weight: 800; margin-bottom: 4px; color: var(--text-primary);
+}
+.step-card-header .step-subtitle {
+  font-size: 12.5px; color: var(--accent-blue); font-weight: 500; line-height: 1.5;
+}
+.step-body {
+  display: flex; flex-direction: column; gap: 10px;
+  font-size: 14px; color: var(--text-secondary); line-height: 1.75;
+}
+
+/* Compact sub-step card */
+.step-card-compact {
+  padding: 14px 18px;
+  border-radius: 10px;
+}
+.step-card-compact .step-card-header {
+  margin-bottom: 10px; padding-bottom: 8px;
+}
+.step-card-compact .step-card-header h3 {
+  font-size: 15.5px;
+}
+.step-card-compact .step-card-header .step-subtitle {
+  font-size: 12px;
+}
+.step-card-compact .step-body {
+  gap: 8px;
+  font-size: 13.5px; line-height: 1.7;
+}
+
+/* Sub-section labels inside a flow step */
+.step-body .info-block,
+.step-body .quote-block,
+.step-body .script-block {
+  margin: 0; border-radius: 8px; padding: 10px 14px;
+}
+.step-body .info-label,
+.step-body .quote-label,
+.step-body .script-label {
+  font-size: 12px; font-weight: 700;
+  margin-bottom: 6px; display: flex; align-items: center; gap: 8px;
+  text-transform: none; letter-spacing: 0;
+}
+.step-body .info-label::before,
+.step-body .quote-label::before,
+.step-body .script-label::before {
+  content: ''; width: 4px; height: 14px; border-radius: 2px;
+}
+.step-body .info-label::before { background: var(--accent-orange); }
+.step-body .quote-label::before { background: var(--accent-green); }
+.step-body .script-label::before { background: var(--accent-blue); }
+
+.step-body p { margin-bottom: 6px; }
+.step-body p:last-child { margin-bottom: 0; }
+.step-body ul { padding-left: 20px; margin: 0; }
+.step-body ol { padding-left: 20px; margin: 0; }
+.step-body li { margin-bottom: 4px; }
+.step-body li::marker { color: var(--accent-blue-dim); }
+.step-body strong { color: var(--text-primary); font-weight: 600; }
+
+/* Compact multi-column lists inside flow steps */
+.step-body ul.two-col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 18px;
+  padding-left: 18px;
+}
+.step-body ul.two-col li { margin-bottom: 2px; }
+
+/* Outline block — hierarchical bullet list */
+.outline-block { padding: 10px 14px; }
+.outline-label {
+  font-size: 12px; font-weight: 700; color: var(--accent-blue);
+  margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+}
+.outline-label::before {
+  content: ''; width: 4px; height: 14px; border-radius: 2px;
+  background: var(--accent-blue);
+}
+ul.outline-list {
+  padding-left: 0; margin: 0; list-style: none;
+  font-size: 13.5px; line-height: 1.7; color: var(--text-secondary);
+}
+ul.outline-list ul {
+  padding-left: 18px; margin-top: 4px; margin-bottom: 4px;
+  list-style: none;
+  border-left: 1px solid var(--border-light);
+}
+ul.outline-list li {
+  margin-bottom: 4px; padding-left: 14px; position: relative;
+}
+ul.outline-list li::before {
+  content: ''; position: absolute; left: 0; top: 10px;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--accent-blue-dim);
+}
+ul.outline-list ul li::before {
+  background: var(--accent-orange);
+}
+ul.outline-list ul ul li::before {
+  background: var(--accent-green);
+}
+ul.outline-list ul ul ul li::before {
+  background: var(--accent-purple);
+}
+.outline-text { color: var(--text-secondary); }
+
+/* Nested flow steps */
+.flow-children {
+  margin-top: 12px; margin-left: 8px; padding-left: 24px;
+  border-left: 2px solid var(--border-light);
+}
+.flow-step-child { gap: 14px; }
+.flow-step-child .step-marker { width: 30px; }
+.flow-step-child .step-num {
+  width: 30px; height: 30px; font-size: 11px; font-weight: 700;
+  border-color: var(--accent-blue-dim); color: var(--accent-blue-dim);
+  box-shadow: 0 0 0 4px var(--bg-primary);
+}
+.flow-step-child .step-line {
+  background: var(--border-light);
+}
+.flow-step-child .step-content { padding-bottom: 20px; }
+
+/* Phase container card */
+.phase-card {
+  border-left: 3px solid var(--accent-blue);
+  background: rgba(88,166,255,0.04);
+}
+.phase-card .step-card-header { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.phase-card .step-card-header h3 { font-size: 17.5px; }
+
+/* Card */
+.card-group { margin-bottom: 32px; }
+.card {
+  background: var(--bg-card); border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg); margin-bottom: 10px; overflow: hidden;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+.card:hover { border-color: var(--border-light); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.card.expanded { border-color: var(--accent-blue); box-shadow: 0 0 0 1px rgba(88,166,255,0.2), var(--shadow-md); }
+
+.card-header {
+  display: flex; align-items: flex-start; gap: 12px; padding: 16px 18px;
+  cursor: pointer; user-select: none; transition: var(--transition);
+}
+.card-header:hover { background: rgba(255,255,255,0.03); }
+.card-tag {
+  flex-shrink: 0; width: 7px; height: 7px; border-radius: 50%; margin-top: 9px;
+  box-shadow: 0 0 6px currentColor;
+}
+.card-title-wrap { flex: 1; min-width: 0; }
+.card-title {
+  font-size: 15px; font-weight: 700; color: var(--text-primary);
+  line-height: 1.5;
+}
+.card-subtitle {
+  font-size: 12.5px; color: var(--text-muted); margin-top: 4px;
+}
+.card-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.card-badge {
+  font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 700;
+  white-space: nowrap;
+}
+.card-badge.flow { background: rgba(88,166,255,0.15); color: var(--accent-blue); }
+.card-badge.knowledge { background: rgba(188,140,255,0.15); color: var(--accent-purple); }
+.card-badge.qa { background: rgba(63,185,80,0.15); color: var(--accent-green); }
+.card-badge.scene { background: rgba(210,153,34,0.15); color: var(--accent-orange); }
+.card-badge.policy { background: rgba(57,208,216,0.15); color: var(--accent-teal); }
+.card-expand-icon {
+  color: var(--text-muted); font-size: 14px; transition: var(--transition); flex-shrink: 0; margin-top: 4px;
+}
+.card.expanded .card-expand-icon { transform: rotate(90deg); color: var(--accent-blue); }
+.card-fav-btn {
+  color: var(--text-muted); font-size: 15px; cursor: pointer; transition: var(--transition);
+  background: none; border: none; padding: 2px; margin-top: 2px;
+}
+.card-fav-btn:hover { color: var(--accent-orange); transform: scale(1.1); }
+.card.favorited .card-fav-btn { color: var(--accent-orange); }
+
+.card-body {
+  max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card.expanded .card-body { max-height: 5000px; }
+.card-body-inner {
+  padding: 0 20px 20px 40px; font-size: 14.5px; line-height: 1.85; color: var(--text-secondary);
+}
+.card-body-inner h4 { font-size: 15px; font-weight: 700; color: var(--text-primary); margin: 14px 0 8px; }
+.card-body-inner h4:first-child { margin-top: 0; }
+.card-body-inner p { margin-bottom: 10px; }
+.card-body-inner ul, .card-body-inner ol { padding-left: 22px; margin-bottom: 12px; }
+.card-body-inner li { margin-bottom: 6px; }
+.card-body-inner strong { color: var(--text-primary); font-weight: 600; }
+.card-body-inner .quote-block {
+  background: rgba(63,185,80,0.08); border-left: 3px solid var(--accent-green);
+  padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 12px 0;
+  color: var(--text-secondary); font-size: 14px;
+}
+.card-body-inner .quote-block .quote-label {
+  font-size: 11px; font-weight: 800; color: var(--accent-green);
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block;
+}
+.card-body-inner .script-block {
+  background: rgba(88,166,255,0.08); border-left: 3px solid var(--accent-blue);
+  padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 12px 0;
+  color: var(--text-secondary); font-size: 14px;
+}
+.card-body-inner .script-block .script-label {
+  font-size: 11px; font-weight: 800; color: var(--accent-blue);
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block;
+}
+.card-body-inner .info-block {
+  background: rgba(210,153,34,0.08); border-left: 3px solid var(--accent-orange);
+  border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 12px 0;
+}
+.card-body-inner .info-block .info-label {
+  font-size: 11px; font-weight: 800; color: var(--accent-orange);
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block;
+}
+
+/* Highlight for search */
+.highlight { background: rgba(210,153,34,0.35); border-radius: 3px; padding: 0 2px; font-weight: 600; }
+
+/* No results */
+.no-results {
+  text-align: center; padding: 80px 20px; color: var(--text-muted);
+}
+.no-results .icon { font-size: 56px; margin-bottom: 16px; opacity: 0.25; }
+.no-results p { font-size: 15px; }
+
+/* Back to top */
+.back-to-top {
+  position: fixed; bottom: 26px; right: 26px; width: 42px; height: 42px;
+  border-radius: 50%; background: var(--bg-card); border: 1px solid var(--border-color);
+  color: var(--text-secondary); cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: var(--transition); z-index: 90;
+  box-shadow: var(--shadow-md);
+}
+.back-to-top.show { opacity: 1; pointer-events: auto; }
+.back-to-top:hover { background: var(--accent-blue-dim); color: #fff; border-color: var(--accent-blue); transform: translateY(-2px); }
+
+/* Stats bar */
+.stats-bar {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+  padding: 0 0 24px; margin-bottom: 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+.stat-item {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 14px 18px; background: var(--bg-card); border: 1px solid var(--border-color);
+  border-radius: var(--radius); transition: var(--transition);
+}
+.stat-item:hover { border-color: var(--border-light); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.stat-item .stat-num { font-size: 24px; font-weight: 800; }
+.stat-item .stat-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-flow .stat-num { color: var(--accent-blue); }
+.stat-knowledge .stat-num { color: var(--accent-purple); }
+.stat-qa .stat-num { color: var(--accent-green); }
+.stat-scene .stat-num { color: var(--accent-orange); }
+.stat-policy .stat-num { color: var(--accent-teal); }
+
+/* Search results page */
+.search-results-header {
+  margin-bottom: 24px; padding: 20px 24px;
+  background: var(--bg-card); border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+}
+.search-results-header h2 {
+  font-size: 20px; font-weight: 800; margin-bottom: 6px;
+}
+.search-results-header .meta { font-size: 14px; color: var(--text-muted); }
+.search-section-group { margin-bottom: 28px; }
+.search-section-label {
+  font-size: 13px; font-weight: 700; color: var(--text-secondary);
+  margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+  .sidebar {
+    transform: translateX(-100%);
+    width: 280px; top: 60px;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 20px 18px 80px; }
+  .header-logo .title .sub { display: none; }
+  .sidebar-toggle {
+    display: flex; width: 38px; height: 38px; border-radius: 10px;
+    background: var(--bg-card); border: 1px solid var(--border-color);
+    color: var(--text-secondary); cursor: pointer; align-items: center; justify-content: center;
+    font-size: 16px; transition: var(--transition);
+  }
+  .sidebar-toggle:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+  .header-btn .btn-text { display: none; }
+  .search-wrap { max-width: none; }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 500px) {
+  .header-logo .title { font-size: 15px; }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .stat-item .stat-num { font-size: 20px; }
+  .stat-item { padding: 12px 14px; }
+  .main { padding: 16px 14px 80px; }
+}
+
+/* Overlay for mobile sidebar */
+.sidebar-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+  z-index: 40; opacity: 0; transition: var(--transition);
+  backdrop-filter: blur(2px);
+}
+.sidebar-overlay.show { display: block; opacity: 1; }
+
+/* ========== Sidebar Search ========== */
+.sidebar-search-wrap {
+  position: relative; padding: 12px 14px; border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0; background: rgba(0,0,0,0.08);
+}
+.sidebar-search-wrap input {
+  width: 100%; height: 36px; border-radius: 10px;
+  background: var(--bg-card); border: 1px solid var(--border-color);
+  color: var(--text-primary); font-size: 13px; padding: 0 30px 0 34px;
+  transition: var(--transition);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.15);
+}
+.sidebar-search-wrap input:focus {
+  outline: none; border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(88,166,255,0.12), inset 0 1px 2px rgba(0,0,0,0.15);
+}
+.sidebar-search-wrap input::placeholder { color: var(--text-muted); }
+.sidebar-search-wrap .sidebar-search-icon {
+  position: absolute; left: 24px; top: 50%; transform: translateY(-50%);
+  color: var(--text-muted); font-size: 13px; pointer-events: none;
+}
+.sidebar-search-wrap .sidebar-search-clear {
+  position: absolute; right: 22px; top: 50%; transform: translateY(-50%);
+  color: var(--text-muted); cursor: pointer; font-size: 12px;
+  display: none; transition: var(--transition);
+}
+.sidebar-search-wrap .sidebar-search-clear:hover { color: var(--text-primary); }
+
+/* Sidebar search result group label */
+.nav-search-group-label {
+  padding: 10px 16px 6px; font-size: 10px; font-weight: 800;
+  color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;
+  display: flex; align-items: center; gap: 6px;
+}
+.nav-search-empty {
+  padding: 24px 16px; text-align: center; font-size: 13px; color: var(--text-muted);
+}
+
+/* ========== Empty Section Placeholder ========== */
+.empty-section {
+  text-align: center; padding: 100px 20px; color: var(--text-muted);
+  background: var(--bg-card); border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+}
+.empty-section .empty-icon { font-size: 64px; margin-bottom: 16px; opacity: 0.15; }
+.empty-section h3 { font-size: 18px; color: var(--text-secondary); margin-bottom: 8px; }
+.empty-section p { font-size: 14px; margin-bottom: 4px; }
+.empty-section .empty-hint { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <button class="sidebar-toggle" id="sidebarToggle" title="菜单">
+    <span>&#9776;</span>
+  </button>
+  <div class="header-logo">
+    <div class="icon">&#128203;</div>
+    <div class="title">保险服务通话知识库 <span class="sub" id="headerSub">/ 首通流程</span></div>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" id="searchInput" placeholder="搜索关键词、问题、场景..." />
+    <span class="clear-btn" id="clearSearch">&#10005;</span>
+  </div>
+  <div class="header-actions">
+    <button class="header-btn" id="favFilterBtn" title="只看收藏">
+      <span>&#9733;</span>
+      <span class="btn-text">收藏</span>
+      <span class="count" id="favCount" style="display:none">0</span>
+    </button>
+    <button class="header-btn" id="expandAllBtn" title="展开/折叠全部">
+      <span id="expandIcon">&#9660;</span>
+      <span class="btn-text">全部展开</span>
+    </button>
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <!-- Directory search (top of sidebar) -->
+    <div class="sidebar-search-wrap">
+      <span class="sidebar-search-icon">&#128270;</span>
+      <input type="text" id="sidebarSearch" placeholder="搜索目录条目..." />
+      <span class="sidebar-search-clear" id="sidebarSearchClear">&#10005;</span>
+    </div>
+    <!-- Tree: groups → sections (expandable) → items -->
+    <div class="sidebar-tree" id="sidebarTree"></div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main" id="mainContent">
+    <!-- Pages built by JS -->
+  </main>
+</div>
+
+<button class="back-to-top" id="backToTop" title="回到顶部">
+  <span>&#8593;</span>
+</button>
+
+<script>
+// ============================================================
+//  DATA STRUCTURE
+// ============================================================
+const SECTIONS = [
+  {
+    id: 'flow',
+    group: '首通',
+    icon: '&#128222;',
+    title: '首通流程',
+    tagClass: 'flow',
+    badgeClass: 'flow',
+    tagColor: 'tag-flow',
+    desc: '首次通话的完整流程步骤',
+    type: 'flow',
+    items: [
+      {
+        id: 'flow-1',
+        title: '加好友',
+        subtitle: '收到小助手消息后第一时间添加微信',
+        content: [
+          { type: 'info', label: '验证消息', text: '您好，我是大童保险服务为您提供的专属咨询专家李塽，很高兴认识您' },
+          { type: 'script', label: '加上之后', text: '您好，我是大童保险服务为您提供的专属咨询专家李塽。<br><br>您预约了明天上午 xx 点的咨询，我会在这个时间准时致电您，稍后我也会将我的执业资格证发给您。用我的专业守护您全家安康，是我的责任和使命。' }
+        ]
+      },
+      {
+        id: 'flow-2',
+        title: '准备工作',
+        subtitle: '沟通前的必要准备',
+        content: [
+          { type: 'info', label: '关键准备', text: '沟通前务必对客户的预留信息掌握清楚，先查看客户年龄和性别对应的各类产品的价格，先记录下来。' },
+          { type: 'script', label: '短信模板', text: '尊敬的x女士：您好，我是大童保险服务专属顾问李塽，我的执业证编号：2040 1631 0109 8000 2026 0013 64，您在我们平台预约了保险咨询服务，预约时间是6月3日上午9:00电话沟通，我将于明天早上准时给您去电话，若您时间有变或有其他的疑问，可拨打电话：17309618559。<br><br>为方便您了解我及我的公司，稍后我将通过微信发送我的名片给您，请您添加我为微信好友，祝您工作愉快。' }
+        ]
+      },
+      {
+        id: 'flow-3',
+        title: '首通电话',
+        subtitle: '正式通话的核心流程（开场 → 初步信息 → 详细信息 → 中端切入 → 预算 → 答疑 → 邀约二通）',
+        children: [
+          {
+            id: 'flow-3-1',
+            title: '开场',
+            subtitle: '开场白与信息核对',
+            content: [
+              { type: 'script', label: '开场话术', text: '你好，您是 xxx 吗？我是大童保险服务专属咨询专家李塽，接到了您的咨询需求，接下来我先和您核对一下信息可以吗？' }
+            ]
+          },
+          {
+            id: 'flow-3-2',
+            title: '初步信息收集',
+            subtitle: '确认咨询意向与保险认知',
+            content: [
+              {
+                type: 'outline',
+                items: [
+                  { text: '我看您这次主要是想为xx配置xx方面的保障是吧' },
+                  { text: '您之前有买过商业保险吗？出于什么考虑想配置保险' },
+                  { text: '（可以找机会从主要想要配保险的家庭成员开始，收集基础信息）' },
+                  {
+                    text: '那您对这几类保险的功能和区别了解嘛',
+                    items: [
+                      { text: '您说的很专业啊，肯定之前做过很多功课；不过稍微有点小瑕疵，我再帮您总结一下配置x类保险的理由与重点' },
+                      {
+                        text: '从来没有配置过',
+                        items: [
+                          { text: '很理解，因为保险产品比较复杂，这才需要专业人士来为您进行相应的风险规划，因为要买什么样的保险取决于咱们家庭存在什么样的风险，有什么样的需求，不是说我随便拿一个产品啥情况都不了解就说是适合咱家的，这也是一种不专业和不负责任的表现' }
+                        ]
+                      },
+                      {
+                        text: '有保单',
+                        items: [
+                          { text: '询问保单详情，可以把保单发来我帮您看一下保单架构是否合理，后续给咱制定方案的时候也会帮咱进行分析' }
+                        ]
+                      },
+                      {
+                        text: '带着产品咨询',
+                        items: [
+                          { text: '询问产品及选择的原因，稍后为您出方案的时候也会把它加入备选来对比' }
+                        ]
+                      },
+                      {
+                        text: '引导全家咨询',
+                        items: [
+                          { text: '您想给孩子配置医疗保障没问题，做父母的都想着优先为孩子考虑。但同时呢我们的专业是制定全套家庭风险保障，咱家过往对于保险的了解可能不太多，既然您找到我了，其实是个很好的机会了解家里面的财富风险应该怎样管理。因为保险实际就是管理财富的，不是买了保险就不生病了，而是保险可以在少投入的情况下把大额支出的风险进行转移。我们的专业是为整个家庭进行分析，正好借本次咨询的机会，我给您整个家庭也做一个全面的诊断，当然最后还是会落脚到孩子的问题上，您觉得怎么样。' },
+                          { text: '因为我们的专业是制定全套家庭风险保障，所以我也顺便为咱其他家庭成员制定一下风险管理方案供您参考，至于您现在买不买，在哪买，买多少，是否慢慢再配齐，都是您和您家里人的选择' }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: 'flow-3-3',
+            title: '详细信息收集',
+            subtitle: '家庭成员结构与必要信息',
+            content: [
+              { type: 'info', label: '话术过渡', text: '接下来我需要了解一下我们的家庭成员结构以及进行必要信息的收集，这个不是为了八卦您的个人隐私，而是为您家庭定制保障方案的关键。而且您放心，您所有的个人信息我们都是严格保密的。' },
+              { type: 'info', label: '问题收集（可同时问多个人）', items: [
+                '宝宝小名；更改称呼 xx 妈妈',
+                '孩子信息：出生年月日；出生孕周；体重；卵圆孔未闭；是否医保；是否有商保'
+              ]},
+              { type: 'info', label: '孩子信息（对话话术）', items: [
+                '咱宝宝的出生年月日是什么呢，因为很多保险能否投保都是按照周岁来界定的',
+                '有没有足斤足月出生，很多保险是没办法保障的',
+                '宝宝是跟您一起回病房的吗',
+                '如果有卵圆孔未闭一定要定期检测。大多重疾险不保，我们可以筛选能保的公司，确保给孩子更周全的保障。具体能不能保下来以投保为准，不是我说的算的'
+              ]},
+              { type: 'info', label: '本人信息', items: [
+                '出生年月日', '年收入', '职业', '是否有社保', '居住地', '有无医保',
+                '是否掌握经济权', '是否有过手术记录', '体检异常', '家族史', '外伤',
+                '已有保险', '平日是否开车/骑电动车'
+              ]},
+              { type: 'info', label: '本人信息（对话话术）', items: [
+                '咱们家庭年收入是多少呢，这部分是可以为设置多少保额提供参考的',
+                '仅仅是剖腹产手术，但是没有合并治疗是没关系的',
+                '怀孕期又糖尿病后续会恢复的也没关系，这种您不用担心，健康管理也是我们服务的一部分，我们会协助您管理病史，帮助您监控、守护全家的健康',
+                '像问您有没有住过院，或者手术记录呢，这些都是申请保险时健康告知涉及的重要内容，是保险公司需要的信息，提前了解也方便我为咱选择合适的产品',
+                '咱们家庭有没有什么遗传病史吗，比如三高、糖尿病、心脏病这类有很强的基因表达，如果说父母有这一块的情况，我可能在您做保障方面要更深度这一块的保障。万一以后发生了相关基因表达，我们这一块的保障可以给您减少非常多的麻烦',
+                '平日出行会经常开车或者骑电动车吗，因为选择意外险的时候不同产品的保障重心不同，这样我在制定方案时也可以尽可能让咱们的保障全面但不浪费'
+              ]},
+              { type: 'info', label: '父亲/配偶信息', items: [
+                '出生年月日', '年收入', '职业', '是否有社保', '有无补充医疗保险',
+                '是否有过手术记录', '体检异常', '家族史', '外伤', '已有保险',
+                '平日是否开车/骑电动车'
+              ]},
+              { type: 'info', label: '长辈 / 父母团体单', items: [
+                '家里长辈的年龄和健康历史；社保情况',
+                '如果父母都有各种医疗相关保障，就说：我晓得了，我会做个相应记录，问是哪个城市的，能查到保单吗。可以问问人力，买的是哪家公司的团体单，帮您分析一下哪些已经承保了，然后来做查漏补缺，否则买多了会重复'
+              ]},
+              { type: 'info', label: '过渡话术', text: '因为我们的专业是制定全套家庭风险保障，所以我也顺便为咱其他家庭成员制定一下风险管理方案供您参考。' },
+              { type: 'info', label: '其他被保家庭成员', text: '需要了解其他需要被保家庭成员的情况。' },
+              { type: 'info', label: '财务与负债', items: [
+                '房贷（多少年）', '车贷', '月支出', '年结余'
+              ]},
+              { type: 'info', label: '关键说明', text: '收入和负债决定了孩子的合理保障额度。' },
+              { type: 'info', label: '确认预算', items: [
+                '没问题的，我根据预算，给您制定适合您的、性价比尽可能高的方案',
+                '出生日期、年收入、结余、户口地、负债、教育规划、父母赡养情况等 → 接《关键信息收集》'
+              ]}
+            ]
+          },
+          {
+            id: 'flow-3-4',
+            title: '考虑引入中端风险管理',
+            subtitle: '年金/储蓄类保险话题切入',
+            content: [
+              { type: 'info', label: '切入逻辑', text: '不知道钱花在哪里，以后没有结余的话需要急用钱拿不出钱，再一个就是孩子以后上学拿不出钱，最后就是养老。以后咱们养老形势会比较严峻，现收现付制，等我们养老的时候就是孩子这一辈，以后养老金能不能发、能发多少都说不准。' },
+              { type: 'info', label: '规划必要性', text: '提前去规划的必要性，也有强制储蓄功能了。越老规划缴的越多，领的越少；现在缴的少，领的多，缴纳的时间也可以拉长。' }
+            ]
+          },
+          {
+            id: 'flow-3-5',
+            title: '问预算',
+            subtitle: '确定合理保费预算',
+            content: [
+              { type: 'info', label: '核心目的', text: '根据收支情况匹配合适的预算，可以给足保障的同时也不会导致家庭经济压力增大。先落地直接诉求，剩下的慢慢完善。' }
+            ]
+          },
+          {
+            id: 'flow-3-6',
+            title: '回答"你们是谁"',
+            subtitle: '公司 & 个人介绍 · 差异化优势',
+            content: [
+              { type: 'info', label: '公司介绍', text: '中国唯一一家进入过全球保险中介排名前 20 的亚洲公司，我们致力于客观中立地为委托人从 140 多家保司中挑选最合适的产品，做到真正的量身定制，也是唯一一家服务客户全生命周期的保险服务公司。' },
+              { type: 'info', label: '个人介绍', text: '我是大童保险持证咨询专家，专业为家庭配置保单，有丰富的三甲医院医疗资源，擅长基础疾病和体检的报告分析，协助匹配医疗资源。从业以来已帮助数十个家庭配置保单，解决家庭就医及理赔代办服务。' },
+              { type: 'info', label: '大童与传统保司的区别', text: '传统保司产品更加单一，选择少，且没有好赔服务。' },
+              { type: 'info', label: '大童与其他保险中介的区别', text: '有保单托管和好赔服务。' },
+              { type: 'info', label: '大童与支付宝保险的区别', text: '前期协助核保（不留痕），后期辅助理赔，有专业的律师团帮助解决理赔纠纷（百万的标的专门请律师，律师费就要 2-3 万）。' },
+              { type: 'info', label: '核心定位', text: '大童客观中立，不代表任何保司，只代表我们的委托人。' }
+            ]
+          },
+          {
+            id: 'flow-3-7',
+            title: '邀约二通',
+            subtitle: '预约方案讲解',
+            content: [
+              { type: 'outline', label: '邀约二通话术', items: [
+                { text: 'xx妈妈，那行，您家的情况我知道了，你看后天这个时间您方便吗，方便的话，我跟您约一个腾讯视频会议，到时候我会打开我的方案，图文并茂的跟您讲解，这样您可以看得更清晰一些。时间大概需要40分钟到一个小时，具体时间每个人都会有区别，因为有的人过程中比较感兴趣，问的问题会更多一些，那可能我的时间就会更长一些。问题少些的话，我们就会稍微快一些。主要就是跟您确认一个大概的时间范围，这个时间您尽量不用带孩子，不用上班，不会被打扰的时间，我们快速把它过掉。' },
+                { text: '那看您后天这个时间方便吗，后续我就在这个时间点给您讲方案' },
+                { text: '您加上我的微信啊，这两天跟我保持联系，这两天我在核保过程中，有需要问您的情况，我会跟您发信息。因为核保越精准，保障越全面，我尽量在全市场上用最低的价格找到保障最全的产品，但是需要您的配合' },
+                { text: '接下来我会整理一份服务报告，以后每次跟您沟通完以后都会给您出一个正式的服务报告，因为这是我对自己的要求，也是我们服务类的公司对所有员工的要求。' },
+                { text: '我会在约定时间前十分钟给您发入会的连接，到时候如果您没看到，我就打电话提醒您' },
+                { text: '这里也问一下，您这边想做保险规划是自己决定就好还是也要参考一下家人地意见呢。如果想参考以下家人地意愿，最好约一个您和您爱人都方便地时间一' }
+              ]}
+            ]
+          }
+        ]
+      },
+      {
+        id: 'flow-4',
+        title: '一通之后',
+        subtitle: '沟通记录与后续准备',
+            content: [
+              { type: 'info', label: '后续动作', text: '写服务沟通记录。' },
+              { type: 'script', label: '衔接二通邀约提醒', text: '女士您好，上周咱们约了今天下午16：00沟通保险方案，时间没问题吧？<br><br>如果期间计划有改变记得即使发信息给我们，以方便我们及时做出调整。<br><br>好嘞，那您在手机或者电脑上提前安装好腾讯会议，方案讲解时间大概在50分钟到一小时，请您提前预留好时间。' }
+            ]
+      }
+    ]
+  },
+  {
+    id: 'knowledge',
+    group: '首通',
+    icon: '&#128218;',
+    title: '常用工具和知识',
+    tagClass: 'knowledge',
+    badgeClass: 'knowledge',
+    tagColor: 'tag-knowledge',
+    desc: '首通中常用的保险知识讲解工具',
+    type: 'cards',
+    items: [
+      {
+        id: 'kn-1',
+        title: '风险金字塔讲解',
+        subtitle: '家庭财富风险的三层逻辑',
+        content: [
+          { type: 'info', label: '核心逻辑', text: '我用风险金字塔的逻辑来跟您拆分，家庭财富风险一般来说分三层，不同层需要不同工具来解决问题。' },
+          { type: 'info', label: '所有性风险（顶层）', text: '高阶风险，主要解决的是财富的私有化保护以及定向精准的分配和传承的风险，主要是高净值家庭会用到的工具。' },
+          { type: 'info', label: '支出性风险（中层）', text: '这个很容易被忽略，针对长期家庭花钱的风险。主要思想就是把短期现金流变成长期现金流，因为赚钱一阵子，花钱一辈子。咱们得把当期收入延长到未来，得让咱一直有钱花。' },
+          { type: 'info', label: '损失性风险（底层）', text: '针对大多数中产家庭首先要管理的风险，主要要管理的是因为意外和疾病导致的收入中断或者大额医疗费用开支导致家庭经济压力大的风险。' }
+        ]
+      },
+      {
+        id: 'kn-2',
+        title: '保险的功能和意义',
+        subtitle: '提升抗风险能力 + 增加被动收入',
+        content: [
+          { type: 'info', label: '两大目的', text: '我们买保险无非就两个目的：提升家庭财务抗风险的能力 + 增加家庭被动收入。' },
+          { type: 'info', label: '比喻-盖楼', text: '我们家庭财务抗风险能力有点像我们要盖一栋楼，我们要考虑它是八级抗震还是七级抗震还是九级抗震。不做这个规划就是 3 级抗震，如果做了可能就是十级抗震。' },
+          { type: 'info', label: '第一功能-抗风险', text: '考虑到极端风险发生的时候，怎么做抗震结构。不能把所有原材料全部关注到抵御风险上，而忘记了不发生风险时生活要怎么过。' },
+          { type: 'info', label: '第二功能-被动收入', text: '保险的第二个功能就是增加家庭中的被动收入，帮我们合理规划未来的子女教育金、养老金和家庭常备的小金库的现金流。重疾意外这种风险可能不发生，但养老、孩子上学、未来生活是一定会发生的。' },
+          { type: 'info', label: '两件事', text: '根据这两个点，未来会帮您做两件事：一是帮家庭提升财务抗风险能力（需要根据家庭实际信息定制方案）；二是帮您安排未来的生活资金来源。' },
+          { type: 'info', label: '隐私保护承诺', text: '我会秉承职业道德，这些信息只是为了帮您做方案使用，不会窥探或传播您的隐私。' },
+          { type: 'info', label: '服务优势', text: '保险行业从业者很多，能卖产品的人很多，但能提出完整风险管理方案和家庭未来生活规划方案的人非常少，而我可以为您提供这样的方案。' }
+        ]
+      },
+      {
+        id: 'kn-3',
+        title: '医疗险的功能与价值',
+        subtitle: '医疗费用报销 + 医疗资源对接',
+        content: [
+          { type: 'info', label: '功能一-医疗费用报销', text: '一般针对住院医疗费用，包括急慢性病、重疾、意外导致的住院。社保目录的用药及治疗范围有局限，通过商业医疗险可以解决。医疗险是报销免赔额以上的部分；如需解决门诊费用也可定制计划，但建议风险自留（门诊费用相对可控）。' },
+          { type: 'info', label: '功能二-医疗资源对接', text: '主要针对高端医疗险，可以对接公立医院的国际部、特需部以及私立医院。' },
+          { type: 'info', label: '投保提示一-既往症', text: '医疗险不报销既往症费用，投保前已经发生的疾病和费用不予报销。' },
+          { type: 'info', label: '投保提示二-健康告知', text: '医疗险投保会对健康情况有一定要求，需要如实告知。特别是很多网红医疗险不带智能核保功能，一定要选专业顾问帮您投保。' },
+          { type: 'info', label: '投保提示三-续保服务', text: '关注续保服务。医疗险是一年期产品，但投保是长期的事，需关注产品的稳定度和续保条件。如果我来帮助您投保，遇到产品下架也会为您对接新产品。' },
+          { type: 'info', label: '投保提示四-理赔协助', text: '理赔的协助支持。医疗险是理赔率最高的人身险产品，需有专业人士协助，否则医疗单据（诊断证明、出入院证、病理结果等）整理起来很麻烦。' },
+          { type: 'info', label: '产品层优势', text: '优选全行业条款，定制适合您的产品方案。像医疗险是否含质子重离子的报销、恶性肿瘤特效药的涵盖这些细节都会帮您考虑到。' },
+          { type: 'info', label: '服务层优势', text: '一站化管家式服务，包括匹配需求、投保、核保、保单管理及未来理赔服务支持的五站全面服务。' }
+        ]
+      },
+      {
+        id: 'kn-4',
+        title: '重疾险的功能与价值',
+        subtitle: '收入损失补偿 + 医疗费用补充 + 绿通资源',
+        content: [
+          { type: 'info', label: '核心定位', text: '重疾险是家庭经济支柱必须要配置的险种。' },
+          { type: 'info', label: '作用一-收入损失', text: '收入来源因疾病风险导致的收入损失。重疾险是定额给付型保险，发生疾病按约定保额赔付，无论是否花完都是家庭的，与医疗险的报销完全不同。在投保时约定合适额度来补充收入，即便生病，家庭生活品质也不会因没有收入而下降。我们需要重疾险，不是因为我们怕生病，而是因为我们还可以为家庭创造价值。' },
+          { type: 'info', label: '作用二-补充医疗费用', text: '补充医疗险不能报销的治疗费用。社保按三大目录（药品目录、服务设施目录、诊疗项目目录）报销，很多项目报销有局限性。特别是重大疾病的先进药品和治疗项目不在目录内，有了重疾险的资金给付就可以选择最好的治疗方式。' },
+          { type: 'info', label: '作用三-绿通资源', text: '对接优质的绿通资源。为您定制带有绿色就医通道服务的重疾险，提供专家门诊、专家病房及专家手术的服务。除了费用还可以解决宝贵的医疗资源问题。' },
+          { type: 'info', label: '投保提示一-产品选择', text: '主要有四块责任：重疾、中症、轻症及身故，同时还有是否多次赔付、额外赔付、心脑血病二次和癌症二次赔付的责任。会根据您的需求、身体情况和家族病史等信息为您挑选合适的产品方案。' },
+          { type: 'info', label: '投保提示二-服务提供', text: '重疾险的理赔服务非常重要，理赔的各种手续和流程不是我们擅长的，需要专人为您服务。' },
+          { type: 'info', label: '产品层优势', text: '优选全行业条款，定制适合您的产品方案。' },
+          { type: 'info', label: '服务层优势', text: '一站化管家式服务，包括匹配需求、投保、核保、保单管理及未来理赔服务支持的五站全面服务。重疾险未来的绿通启动、理赔服务支持您不用自己再做了。' }
+        ]
+      },
+      {
+        id: 'kn-5',
+        title: '关键信息收集 — 家庭结构及责任',
+        subtitle: '家庭成员结构与社保情况',
+        content: [
+          { type: 'info', label: '收集要点', items: [
+            '请问您的家庭成员结构，及每个人的出生年月日？',
+            '孩子主要是谁来照顾的呢？',
+            '父母也和您一起住吗？',
+            '您家庭成员是否有社保？具体情况？（城镇职工基本医疗保险、公费医疗、新农合）'
+          ]}
+        ]
+      },
+      {
+        id: 'kn-6',
+        title: '关键信息收集 — 保险经历与认知',
+        subtitle: '已有保单与保险认知',
+        content: [
+          { type: 'info', label: '收集要点', items: [
+            '您家中除了社保，是否已经投保过一些商业保险？',
+            '这些保险是什么时候购买的？当时为什么想到买保险？',
+            '是否记得每位家庭成员名下的保单购买时间、产品名称、公司、保额，大致保费支出？',
+            '您当时的销售人员现在是否还有联系，还在为您提供服务？',
+            '我可以为您做一次已有的保单分析，帮您梳理清楚已经有过的保障都是什么，然后咱们再做查缺补漏'
+          ]}
+        ]
+      },
+      {
+        id: 'kn-7',
+        title: '关键信息收集 — 健康/职业信息',
+        subtitle: '健康状况与职业风险评估',
+        content: [
+          { type: 'info', label: '收集要点', items: [
+            '请问每一位家庭成员的身体健康情况如何？',
+            '是否有在医院的就医诊断记录？',
+            '是否有近期的体检报告可以提供？',
+            '身高、体重 BMI 是否大于 28、30',
+            '是否吸烟、喝酒？',
+            '有无连续服药超 2 个月？',
+            '请问您家中的经济来源是哪些人贡献？',
+            '从事什么行业、什么工种的工作，是否属于危险职业？',
+            '是否有家族病史',
+            '家庭的体检报告情况'
+          ]}
+        ]
+      },
+      {
+        id: 'kn-8',
+        title: '关键信息收集 — 财务信息',
+        subtitle: '收入、支出与保费预算',
+        content: [
+          { type: 'info', label: '收集要点', items: [
+            '年收入分别如何？收入特点是比较稳定的、有保障的，还是波动比较大？',
+            '请问您家庭每月日常消费支出大约得多少钱？主要是哪些方面开支比较大呢？',
+            '还有其他不得不承担的大额支出吗？',
+            '您对于家庭财务方面还有哪些担忧的事情吗？',
+            '您在选择保险配置时，优先考虑哪个因素？',
+            '您的保费预算是多少？',
+            '您准备执行保障方案的周期是多久？',
+            '请问您家的保险决策由您一个人就能确定，还是需要跟家人商量，共同决定？'
+          ]}
+        ]
+      },
+      {
+        id: 'kn-9',
+        title: '关键信息收集 — 公司与偏好',
+        subtitle: '公司要求与产品偏好',
+        content: [
+          { type: 'info', label: '收集要点', items: [
+            '请问您对保险公司有没有什么要求？',
+            '之前是否有心仪的产品方案？',
+            '对产品形态、责任是否有特定的要求？',
+            '更在意免赔额还是保费？'
+          ]}
+        ]
+      },
+      {
+        id: 'kn-10',
+        title: '方案需求沟通',
+        subtitle: '体检分析与方案制定',
+        content: [
+          { type: 'info', label: '沟通流程', items: [
+            '体检报告分析',
+            '规划应有保额和本次保额',
+            '根据收支情况匹配合适的预算',
+            '先落地直接诉求，剩下的慢慢完善',
+            '根据产品责任偏好设计方案'
+          ]}
+        ]
+      }
+    ]
+  },
+  {
+    id: 'qa',
+    group: '首通',
+    icon: '&#10067;',
+    title: '常见客户问题',
+    tagClass: 'qa',
+    badgeClass: 'qa',
+    tagColor: 'tag-qa',
+    desc: '首次沟通中客户最常提出的问题及应答',
+    type: 'cards',
+    items: [
+      {
+        id: 'qa-1',
+        title: '"现在不着急买保险"',
+        subtitle: '客户认为风险离自己还远',
+        content: [
+          { type: 'quote', label: '客户心声', text: '理解，我没在这个行业的时候也会认为买保险是重要不紧急的事情，总觉得风险离我还远。' },
+          { type: 'info', label: '核心逻辑', text: '正因为风险距离我们还比较遥远，才有可能去买保险。医疗险和重疾险都是身体健康者的特权，只有在身体健康时才能申请，并且最终决定权在保险公司。' },
+          { type: 'info', label: '关键转折', text: '我们认为不需要的时候才有权利和资格购买，可能有一天觉得需要了，也没有这个机会了。现在有些肺结节的客户买重疾和医疗险就很难了。' },
+          { type: 'info', label: '年金险补充', text: '像年金保险这种类理财型保险，解决的是保险公司一直给咱们钱花的问题，也是一种未雨绸缪的准备。趁着年轻把钱放入保险账户，然后就可以一直钱生钱有钱花。' },
+          { type: 'script', label: '收尾话术', text: '所以现在应该考虑得更多的不是要不要买保险或者等等再买，而是考虑我要怎么买、找谁来为我提供服务、选择适合我的保障计划，您说是吧。' }
+        ]
+      },
+      {
+        id: 'qa-2',
+        title: '"你直接出方案，别问我那么多问题"',
+        subtitle: '客户不耐烦配合信息收集',
+        content: [
+          { type: 'info', label: '询问原因一-避免重复', text: '询问有没有买过是为了避免重复规划。' },
+          { type: 'info', label: '询问原因二-核保需要', text: '咨询健康类的问题，肯定要了解你的身体情况，因为投保时保司会根据这些信息进行核保，特定既往症会导致保司拒保的。' },
+          { type: 'info', label: '询问原因三-网点覆盖', text: '所在地是为了看当地是否有网点，提供后续好赔、法律服务。' },
+          { type: 'info', label: '询问原因四-预算匹配', text: '要预算和收入，主要是辅助您决定合适的预算，可以给足保障的同时也不会导致家庭经济压力增大。' }
+        ]
+      },
+      {
+        id: 'qa-3',
+        title: '"觉得保险都不靠谱"',
+        subtitle: '客户有负面印象或不愉快经历',
+        content: [
+          { type: 'quote', label: '先了解原因', text: '能问下您在买保险的过程中有什么不愉快的经历吗？' },
+          { type: 'info', label: '保险的复杂性', text: '保险确实是非常复杂的金融工具，它和其他金融产品不同。其他金融工具只需要关注投资期限、投资收益率几个简单指标即可，而保险需要认真阅读条款约定，并根据自己的实际需求去挑选。' },
+          { type: 'info', label: '专业人士的价值', text: '保险是重要的家庭资产配置工具，既复杂又专业的特性决定了保险的购买是需要有专业人士指导的。经过专业人士指导的方案优势是性价比高、覆盖风险全面、理赔服务更专业。' },
+          { type: 'script', label: '收尾话术', text: '您这次选择我们就对了，我们的原则是向善利他，哪怕您本次只是了解都没关系，希望能帮到您。' }
+        ]
+      },
+      {
+        id: 'qa-4',
+        title: '"你们是保险公司吗？"',
+        subtitle: '客户对大童的定位不清楚',
+        content: [
+          { type: 'info', label: '定位说明', text: '大童是一家保险第三方平台，也可以理解为一家中介平台。但绝对不是一家小平台小公司，是中国唯一一家进入过全球保险中介排名前 20 的亚洲公司。' },
+          { type: 'info', label: '服务区别', text: '在我们这投保不是服务的结束，而是保险保障服务的开始。保费上不会和保险公司有差异，但您能得到保障的同时额外得到大童的服务，比如好赔服务——有专业的理赔专家，在遇到理赔纠纷时，站在客户的立场来向保险公司争取最大的理赔权益。' }
+        ]
+      },
+      {
+        id: 'qa-5',
+        title: '"大童和别的保险服务机构有什么区别？"',
+        subtitle: '与其他机构/平台的差异化',
+        content: [
+          { type: 'info', label: '与传统保司相比', text: '传统保司产品更加单一，选择少，且没有好赔。' },
+          { type: 'info', label: '与其他保险中介的区别', text: '有保单托管和好赔服务。' },
+          { type: 'info', label: '与支付宝保险的区别', text: '前期协助核保（不留痕），后期辅助理赔，有专业的律师团帮助解决理赔纠纷（百万的标的专门请律师，律师费就要 2-3 万）。' },
+          { type: 'info', label: '核心定位', text: '大童客观中立，不代表任何保司，只代表我们的委托人。' }
+        ]
+      },
+      {
+        id: 'qa-6',
+        title: '"在你们这里买和在保险公司买有什么区别？"',
+        subtitle: '中介模式 vs 直销模式',
+        content: [
+          { type: 'info', label: '原因一-产品更丰富', text: '大童汇聚上千款产品，来自各家保险公司。站在您的角度，按需挑性价比高的产品，不局限于一家，还能定制大童专属方案。' },
+          { type: 'info', label: '原因二-选购更省心', text: '要是您自己挑，海量产品对比起来太费劲。在大童，把需求一说，不管是重疾多次赔付不分组、孩子要带少儿高发疾病保障、先生要续保医疗险、分组重疾险，还是性价比高的定寿，甚至身体有结节要找宽松核保的，从选品到理赔，一站式解决。' },
+          { type: 'info', label: '原因三-服务有特色', text: '大童是业内领先的保险服务商，不仅对比筛选高性价比产品，还提供全周期管家式服务，比如保单托管、好赔服务提供理赔支持。理赔时，找保险公司或大童都行，相当于双重保障。' },
+          { type: 'info', label: '行业趋势', text: '欧美成熟的保险市场，现在买保险都找中介，国内也有越来越多客户认可中介模式，我以往的客户在选择了我、选择了大童后，都觉得体验感非常好。' }
+        ]
+      },
+      {
+        id: 'qa-7',
+        title: '"客户在其他地方看过产品"',
+        subtitle: '客户已关注到特定产品',
+        content: [
+          { type: 'info', label: '应对策略', text: '询问名称，在二通的时候进行比较和讲解。要掌握客户关注到的产品，在做方案时有针对性，选择保障更优或者保费更优等有竞争力的产品形成方案。' },
+          { type: 'info', label: '防范脱落', text: '要避免因为产品的因素而导致客户脱落，同时也对自己公司产品有信心。' },
+          { type: 'info', label: '支持客户选择', text: '如果确实在其他平台的产品更优（比如支付宝的医疗险），从长远的角度来看，可以支持客户选择其他平台的医疗险，但通过本次咨询能够从我们这里获得长期服务。' }
+        ]
+      },
+      {
+        id: 'qa-8',
+        title: '"重疾买单次赔付的好还是多次赔付的好？"',
+        subtitle: '分组 vs 不分组重疾险',
+        content: [
+          { type: 'info', label: '赞美客户', text: '您这个问题问得很专业！' },
+          { type: 'info', label: '分组型', text: '把所有疾病分为几组，每组赔付一次。同一组里的重疾赔付以后，其他种类则不再赔付，而不同组的其他重疾可以再次赔付。一般将同一类别的疾病分在一组，如果分组合理的话，组内疾病二次发生的可能性不大。' },
+          { type: 'info', label: '不分组型', text: '相当于每种疾病都是单独一组，当一种重疾赔付以后，剩余每种疾病都有再次赔付的可能（会设置一定的间隔期）。' },
+          { type: 'info', label: '建议', text: '不分组重疾价格相对于分组型会贵一些，如果预算没有问题的话，建议您可以选择不分组的重疾。' }
+        ]
+      },
+      {
+        id: 'qa-9',
+        title: '"我的城市有你们的公司吗？"（异地）',
+        subtitle: '客户担心异地服务',
+        content: [
+          { type: 'info', label: '网点覆盖', text: '目前大童在全国 31 个省市都有分公司，200 多个营业网点，覆盖了全国多个地区。我们和其他互联网保险公司不同，有强大的线下实体作为支撑。' },
+          { type: 'info', label: '顾问匹配', text: '我本人是从线下数万名风险管理师中挑选出来的，拥有线上服务权限的一名风险管理师，是系统基于您的需求把我匹配给您。' },
+          { type: 'info', label: '无障碍沟通', text: '您不用担心由我为您服务会因为异地产生障碍，现在互联网也非常发达，完全可以无障碍沟通。' },
+          { type: 'info', label: '全国协助理赔', text: '服务您的不只是我一人，我们全国的分支机构都能够协助我为您服务，全国各地有两百多位理赔专员，帮助大童的客户办理理赔。即便短期出差有理赔需要，在当地都可以有人协助您。' }
+        ]
+      },
+      {
+        id: 'qa-10',
+        title: '"你说的这些保险公司我没听过"',
+        subtitle: '客户对保险公司知名度有疑虑',
+        content: [
+          { type: 'quote', label: '认同客户', text: '理解，我之前没在保险行业的时候也是只了解广告上的保险公司。不在同一个领域或者不太关注的确实了解得不多。' },
+          { type: 'info', label: '股东背景举例', text: '工银安盛股东是工商银行，这个您知道吧。' },
+          { type: 'info', label: '监管统一', text: '不论是哪家保险公司，国家金融监督管理总局的监管都是同样的。' },
+          { type: 'info', label: '准入门槛', text: '中国只有 200 家有牌照的保险公司，为什么这么少呢？因为门槛高，所有的保险公司注册资本都是 2 亿以上的实缴。' },
+          { type: 'info', label: '安全保障', text: '目前中国还没有一家持有寿险牌照的保险公司倒闭过。保险公司每一笔保费收入都要有 20% 进入保险保障基金，且每年利润的 10% 也都进入这个保障基金，这就是双重风险保障。即使保险公司申请破产（如之前恒大的保险公司），破产之后是必须进行重组的，让现有保险公司把它收购掉，之前保险公司所有的保单的有效性都不会受到任何影响。' },
+          { type: 'info', label: '核心观点', text: '咱们只要看产品的责任，有些保险公司名气再大，不在责任范围内的也不会理赔。而且有些保险公司平时虽然不打广告，但是产品都是非常良心的，性价比都非常高。' }
+        ]
+      },
+      {
+        id: 'qa-11',
+        title: '"你们是怎么盈利的？"',
+        subtitle: '客户对第三方模式盈利方式好奇',
+        content: [
+          { type: 'info', label: '类比解释', text: '我们的模式很简单，就像京东一样，他自己不生产电子产品或者家用电器，但是他能提供产品和服务，甚至服务比厂家自己的都好，这就是产销分离嘛。厂家只负责生产，第三方负责销售，最后和厂家去结算。' },
+          { type: 'info', label: '不收客户钱', text: '我们不收客户的钱，而且任何一个保险产品不论在哪都是一样的价格，这是由国家金融监督管理总局监管的。' },
+          { type: 'info', label: '收入来源', text: '作为第三方，我们多了前期的公允测评，以及后续的终身服务。我们的收入并不由某个保险公司发放，所以您不用担心我会因为利益原因给您推荐不适合的产品。最终的选择权在您，我们主要是让您有知情权，帮您把好关。' }
+        ]
+      },
+      {
+        id: 'qa-12',
+        title: '"在你这买能有优惠吗？"',
+        subtitle: '客户期望价格优惠',
+        content: [
+          { type: 'quote', label: '认同客户', text: '非常理解您，正如我们从多家房产租赁中介去租一套房子，想看哪家能给出更优惠的价格。' },
+          { type: 'info', label: '监管定价', text: '但在保险行业里面这种情况实际上不会存在，因为每一家保险公司的产品定价都是受到监管的，一旦确定就不能够变动，也因此确定的一个产品在全国的价格是统一的。' },
+          { type: 'info', label: '额外价值', text: '我也想给您优惠但确实是做不到，但我给您提供的保障方案已经是从市面上众多产品中挑选出来，非常具有性价比的了。除此之外，您在大童投保，我还能够给到您额外的服务，包括后续的保单托管、协助理赔等，这些其实也是有成本的，这是我能够为您提供的额外价值。' }
+        ]
+      },
+      {
+        id: 'qa-13',
+        title: '"我在你这买能返佣吗？"',
+        subtitle: '客户要求佣金返还',
+        content: [
+          { type: 'quote', label: '认同客户', text: '您问返佣，我特别能理解，谁都想实惠些。但保险行业没给客户的官方返点，有也是业务员自掏腰包。' },
+          { type: 'info', label: '原因一-违法', text: '返佣违法，监管会处罚，后续这张保单也可能受到影响。靠返点拉客的咨询师，专业和自信都存疑。' },
+          { type: 'info', label: '原因二-服务基础', text: '佣金是我在行业长期生存的基础，没收入，我承诺的终身服务就是空话。保单伴随您长久，从咨询、设计到后续各种变更，都需专业指导，我一直坚持在行业中深耕，才能在关键时帮您用好保单，维护您的利益。' },
+          { type: 'info', label: '原因三-价值定位', text: '我的价值在于专业和服务。我站在您的立场，客观中立挑产品，靠的是真本事。大童作为中介里的头部平台，服务品质甩开不少同行一大截。' },
+          { type: 'info', label: '免费服务说明', text: '我作为大童的收费咨询师，能给您终身免费咨询，要是成了我的客户，保单管理费、服务费全免，别家公司的保单我也一并接管，每年还送上专业的保单年检。这实打实的好处，别家给不了。' },
+          { type: 'script', label: '收尾话术', text: '您要是认可专业付费，选我不亏；看重短期利益，我也理解，尊重您的选择。' }
+        ]
+      },
+      {
+        id: 'qa-14',
+        title: '建议一：委托专业第三方机构管理保单',
+        subtitle: '选择正规机构的三个标准',
+        content: [
+          { type: 'info', label: '标准一-合法合规', text: '必须要选择一个合法合规、经由中国银保监会批设的保险服务机构。受监管的机构才能够保证对您的信息的保密、服务的持续和管理的严谨。' },
+          { type: 'info', label: '标准二-科技能力', text: '平台要有很强的科技能力。我国保险业历史上有数万款产品，每种产品的责任都不同。把这些保单管理好的前提是，需要有强大的保险产品数据库和先进的保险责任聚合算法。' },
+          { type: 'info', label: '标准三-管理经验', text: '要有管理过大数量级保单的经验。目前大童保险服务就是一个不错的选择——中国银保监会批设的首个全国性保险服务机构。大童旗下的快保科技是一家专注于保险服务领域的科技公司，拥有中国 2 万多款保险产品的数据管理，底层技术和责任聚合等原创技术。大童于 2018 年首发中国国内的保险托管服务，目前已服务了 50 多万个家庭。' }
+        ]
+      },
+      {
+        id: 'qa-15',
+        title: '建议二：明确一个家庭的保单主管理人',
+        subtitle: '专人负责、其他成员知情',
+        content: [
+          { type: 'info', label: '核心原则', text: '一个家庭的保单情况、保险事宜应明确一个专人负责，便于系统的有延续性的规划家庭保障，其他家庭成员只需要知情就好了。' }
+        ]
+      },
+      {
+        id: 'qa-16',
+        title: '建议三：选择一名资深专业的保险顾问',
+        subtitle: '长期服务的落地执行者',
+        content: [
+          { type: 'info', label: '顾问的价值', text: '通过专业机构（比如大童平台的保单托管服务），可以在线随时了解家中所有保障的情况，还会有及时的续期提醒等配套服务。' },
+          { type: 'info', label: '专业服务', text: '每年的保单年检对您保障水平与家庭现状匹配度的深度分析、对您家庭保单托管报告的系统解读，还有未来长期服务的落地执行，都需要一名专业的保险服务顾问。' },
+          { type: 'info', label: '顾问资源', text: '目前大童在全国 27 个省有 4 万多名专业的顾问可以为您服务。' }
+        ]
+      },
+      {
+        id: 'qa-17',
+        title: '为什么要托管保单',
+        subtitle: '保单托管的四个必要性',
+        content: [
+          { type: 'info', label: '原因一-风险动态变化', text: '保险的作用是管理风险损失，而一个家庭的财务风险不是静态的。它与家庭人员数量、财务状况、所处阶段、债务状况等风险相关，这些要素是动态变化的。配置的目的就是不同阶段转移不同风险。家庭保单的配置、持有和服务是个很长的过程，甚至会覆盖家庭的全生命周期。' },
+          { type: 'info', label: '原因二-产品迭代', text: '保险产品本身也会随着行业的进步、时代的变迁和内卷进行更新迭代，往往最新的保险产品会有很多新的保障责任和服务项目。比如 20 年前的重疾险，保障不会有轻症中症和特种疾病等责任，需要及时检查并考虑是否进行产品的更新和升级。' },
+          { type: 'info', label: '原因三-专业性门槛', text: '保险是一个专业性很强的金融产品，很多条款和细节很容易被非专业人士忽略。特别是随着时间的延续，很容易忘记您和家人拥有哪些保障、如何去兑现。这就极有可能造成某一天发生一些特殊事情的时候，遗漏了一次重要的理赔机会。' },
+          { type: 'info', label: '原因四-续保失效风险', text: '很多保险需要长期续保才能保证效力。很多客户拥有多份保单来自不同公司、购于不同时间、归属于不同的缴费账户，结果有的保单就错过了续期缴费时间，造成了保单的失效，这是极大的损失和隐患。因此拥有第一份保单开始就要建立起长期的保单管理意识，像人的身体要定期体检一样。' }
+        ]
+      },
+      {
+        id: 'qa-18',
+        title: '加上微信后客户说不需要了',
+        subtitle: '已加好友但客户放弃咨询',
+        content: [
+          { type: 'script', label: '应对话术', text: '好的，因为要给公司做个服务进度的答复，所以也问下您，您在之前应该是想要咨询的，那是什么原因现在不需要了呢，是最近太忙了还是什么原因呢，如果是我们这边的原因，您可以坦诚的说一下，帮助我们改进，如果是其他原因，我帮您保留这个免费咨询的名额，我们为您提供咨询的目的不是销售产品，因为选择权永远在您自己身上，只要能帮到您，让您未来在选择保险方面不踩坑、选择到性价比更高的方案更好。好的，以后有什么需要随时联系我，哪怕不配置也没关系，能帮到您就好。' }
+        ]
+      },
+      {
+        id: 'qa-19',
+        title: '约不到客户讲方案',
+        subtitle: '方案做好但客户迟迟不约',
+        content: [
+          { type: 'script', label: '话术一', text: '早上好，方案已经做好，前天给您电话，您可能太忙了，今天下午和晚上我正好有空，您看您时间方便吗，方便的话咱们过一下方案呀。' },
+          { type: 'script', label: '话术二', text: 'XX 女士您好，距离上次沟通已经几天了。接下来，我们的沟通计划设在什么时间比较合适？一般我们家庭规划方案，如果停留时间太久，最后就会不了了之。而我还有您在这件事情上都还是花费了一些心力的，无论您怎么做选择，从我个人的角度上来说，我是希望我能真的帮助到您。如果您最近比较忙，您跟我说一下，等您不忙了咱们再沟通也可以。' }
+        ]
+      },
+      {
+        id: 'qa-20',
+        title: '加上微信后客户始终不回复',
+        subtitle: '已加好友但长期沉默',
+        content: [
+          { type: 'script', label: '提醒一', text: '女士，早上好，咱们的保险咨询我一直惦记着，也希望您能够抽出时间一定给自己做个规划，我们是第三方保险服务机构，不论是从产品筛选、理赔服务等都是站在客户的角度，我们不强制购买，不论是否购买都是您的权力，但也希望您百忙之中一定提前做好保险规划，为美好的生活先打下一个坚实的地基，您今天下午要是方便的话，我给您预留个时间。' },
+          { type: 'script', label: '提醒二', text: '女士，早上好，今天下午我有空，你看用不用给您预留个咨询的时间，最近做保险咨询的客户还是挺多的，昨天一个跟你年龄一样大的客户来咨询，我也想到你了，保险规划咱们一定要尽早落实，保险就像汽车的备胎一样，多一份准备，少一份损失，因为咱们有了托底的保证，这样就可以踏踏实实的赚钱花钱了。您看下午3点或者晚上8点的时间咱们要不要初步的沟通一下。' },
+          { type: 'script', label: '提醒三', text: '女士，咱们加上好友 n 个月了，您的免费保险咨询服务一直还没开启，要不要今天聊一下，帮您解答一些保险问题以及给您讲一下保险配置的逻辑，避免咱们做保险规划的时候踩坑。' }
+        ]
+      },
+      {
+        id: 'qa-21',
+        title: '客户上来就要方案（了解需求版）',
+        subtitle: '未了解需求就索要方案',
+        content: [
+          { type: 'script', label: '应对话术', text: '现在市面上每种产品包含的责任多种多样，我们作为专业保险第三方平台，合作的保险公司有几十家，对接的产品成百上千，没有了解您的具体需求和偏好，给到您的所谓方案，就只是一个大众的样品，对您的意义和帮助可能都不大，您可能也会觉得这个和您想要的不一样，所以，如果您觉得还是想要一个真的符合您需求的方案，我们还是抽二十分钟，具体的聊一下，您看可以吗？' },
+          { type: 'info', label: '进一步动作', text: '如果客户还是想要方案，可以先发送三个价格和保障差距较大的方案供客户参考，然后争取进一步的沟通。' }
+        ]
+      },
+      {
+        id: 'qa-22',
+        title: '后续不卖保险了，我找谁理赔',
+        subtitle: '顾问离职后的理赔对接',
+        content: [
+          { type: 'script', label: '应对话术', text: '我已经来了很久了，而且业绩也还不错，没有放弃的理由，即使有一天不做了，除了会把您移交给我们团队其他成员继续对接您之外，我还是会给您提供终身的服务；除此以外，我们只是为您提供了双重保障，您永远可以打电话给保险公司，他们也会有专员跟您联系，只不过材料准备啥的需要您自己操作，会麻烦很多；再者，保险不会因为一个人的变动就不赔了，保单是永远具备法律效力的，只要您在大童买了，我就会尽力把您服务好，为您分忧。' }
+        ]
+      },
+      {
+        id: 'qa-23',
+        title: '如果重疾险不发生理赔，交的钱不久白交了',
+        subtitle: '重疾险保费去向解释',
+        content: [
+          { type: 'info', label: '保费处理分三种情况', items: [
+            '消费型重疾险：保障到期后，若没有发生理赔，保费通常不会返还，合同终止，保费相当于为保障期间的风险保障付费。',
+            '返还型重疾险：保障到期且未发生理赔的话，保险公司会按照合同约定返还已交保费或者返还约定的保险金额（比如 110% 已交保费），具体以合同条款为准。',
+            '终身型重疾险：如果是不带身故责任的纯终身重疾险，若被保人终身未患合同约定重疾，保费不会返还；如果是带身故责任的终身重疾险，即便未患重疾，被人身故后，受益人也能获得合同约定的身故保险金，相当于保费最终以理赔金的形式给到受益人。'
+          ]},
+          { type: 'quote', label: '核心理念', text: '退一万步说，咱们买保险也不是为了生病，当然是这一辈子都不生病是最好的，保险就是那个最坏情况发生的时候，让我们家庭不会垮掉的护身符。' }
+        ]
+      },
+      {
+        id: 'qa-24',
+        title: '如果发生理赔了，是找你们还是保险公司',
+        subtitle: '理赔对接主体',
+        content: [
+          { type: 'script', label: '应对话术', text: '如果保单在我们这里托管了，当然是找我们是您的第一选择。我们的好赔服务可以省去您自己和保险公司对接、收集材料、整理材料、提供材料的麻烦。如果发生纠纷，我们还有专人帮您去与保险公司沟通。' }
+        ]
+      },
+      {
+        id: 'qa-25',
+        title: '你们是不是谁佣金高卖谁家',
+        subtitle: '佣金与推荐立场',
+        content: [
+          { type: 'script', label: '应对话术', text: '如果说谁家佣金高卖谁家，那我们就不在这了，谁家佣金高我们就去谁家了对吧。如果我挑高佣金的卖，回头您觉得产品不好，以后也不找了我，那我不是得不偿失，对吧。我在这里是看中了大童的理念，注重服务，我认为这个才是行业可持续发展的基石。' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'scene',
+    group: '首通',
+    icon: '&#127919;',
+    title: '首通场景应对',
+    tagClass: 'scene',
+    badgeClass: 'scene',
+    tagColor: 'tag-scene',
+    desc: '首通中可能遇到的各种客户场景及应对策略',
+    type: 'cards',
+    items: [
+      {
+        id: 'sc-1',
+        title: '客户首次沟通就联系不上',
+        subtitle: '预约后电话打不通',
+        content: [
+          { type: 'info', label: '步骤一', text: '预约联系的第一天，提前添加客户微信，如果未添加上，则到预约时间直接电话联系。' },
+          { type: 'info', label: '步骤二', text: '预约时间电话未联系上，请在 15 分钟或 30 分钟再次电话联系客户，有可能客户临时有事没接到电话。' },
+          { type: 'info', label: '步骤三', text: '如果还是未联系上，请在第二天同一预约时间电话联系客户。客户预约的时间一般是客户每天可能有空的时候，所以要选第二天的同一时间联系。' },
+          { type: 'info', label: '步骤四', text: '前三天每天都要联系，但每天不要超过两次电话联系，避免客户看到电话太多而产生抗拒心理。' },
+          { type: 'info', label: '步骤五', text: '如前三天都未联系上，可申请激活小助手联系客户，后续过几天联系一次，可以换手机号拨打。' }
+        ]
+      },
+      {
+        id: 'sc-2',
+        title: '联系上客户就说不需要了',
+        subtitle: '客户拒绝服务',
+        content: [
+          { type: 'info', label: '场景A-已在其他地方配置', text: '询问客户配置了什么保障，是否已经对内容充分了解，并且满足其保障需求。如果已经满足的话，可以与客户沟通下次再有需求可以再联系。对于保障规划，我们更加专业，且有非常多的长期服务能够提供给客户，可以介绍一下保单托管以及好赔服务。' },
+          { type: 'info', label: '场景B-暂时不需要', text: '好的没问题，如果有需要的话再联系。可以先添加下我的微信，放心我不会骚扰您的，我是专业的风险管理师，是根据您的需求定制保障，而不会向您推销产品。可以当作交个朋友，有保险甚至是一些金融方面的问题您都可以问我，这是我的专业所在。' }
+        ]
+      },
+      {
+        id: 'sc-3',
+        title: '客户上来就问很多问题',
+        subtitle: '"十万个为什么"型客户',
+        content: [
+          { type: 'info', label: '应对策略', text: '为客户答疑解惑，满足客户的需求肯定是非常重要的，专业快速的回答也能够让客户感觉到我们的专业。但是不能被淹没在客户的"一万个为什么"中。' },
+          { type: 'info', label: '掌握节奏', text: '要找到机会掌握沟通的节奏，最好的办法就是提前准备问题清单，在我们的询问中，让客户回答。客户最终跟随我们的节奏来。' },
+          { type: 'info', label: '一举两得', text: '帮助客户解决部分疑问之外，还能够充分了解客户信息，为后续的保障规划做准备。' }
+        ]
+      },
+      {
+        id: 'sc-4',
+        title: '客户想要微信沟通',
+        subtitle: '不愿意电话沟通',
+        content: [
+          { type: 'info', label: '应对策略', text: '先微信聊一会，再约电话沟通。刚开始沟通，客户对于我们完全不了解，贸然要求电话沟通大概率会被拒绝。' },
+          { type: 'info', label: '约电话时机', text: '在微信与客户有过沟通过后，找机会约客户花点时间电话聊一下，成功概率会更大。' }
+        ]
+      },
+      {
+        id: 'sc-5',
+        title: '客户只想给孩子配置 / 只咨询某个险种',
+        subtitle: '聚焦单一需求',
+        content: [
+          { type: 'info', label: '步骤一', text: '首先了解孩子是否配置过其他商业保险，是否配置过社保。如果没有配置过的话，本次想要配置哪些保障，谁做投保人？' },
+          { type: 'info', label: '步骤二', text: '投保人是孩子父亲或母亲，那么孩子的父母是否都有社保呢？是否有配置过其他商业保险呢？（转到投保人身上趁机多了解整个家庭保障情况）' },
+          { type: 'info', label: '步骤三', text: '认同客户关爱孩子，想优先考虑孩子的保障配置，这点没有问题，要顺着客户需求来。但要把理念传达给客户——实际上父母才是孩子最终最大的保障。' }
+        ]
+      },
+      {
+        id: 'sc-6',
+        title: '客户不愿告知详细信息',
+        subtitle: '不愿透露收入/已有保单/体检报告',
+        content: [
+          { type: 'info', label: '策略一-建立信任', text: '可以发送保密协议、个人执业证、公司资质等材料获取客户信任。可以发送自己的个人介绍让客户提前了解，有个熟悉的、专业的印象。' },
+          { type: 'info', label: '策略二-做好铺垫', text: '要相关资料做好铺垫。比如收入是为了计算合理的保额，健康报告是为了向保险公司申请投保。提前告知客户我们做专业的保障规划，不做产品的推销。' },
+          { type: 'info', label: '策略三-不被卡住', text: '如果客户还是执意不想给，切勿被卡住进度，正常按照已有信息规划。' },
+          { type: 'info', label: '策略四-侧面估算', text: '可以根据客户所在地、职业、是否开车等信息，估计客户收入情况，来做保障规划，确保方案不会过于超出客户预期。' },
+          { type: 'script', label: '话术示例', text: '好的没问题，您的保障方案配置是要根据实际情况来制定的。我看助理留言您是想给 XX 配置 XX 保障是吧？那您跟我说下出生日期和性别，是否都有医保呢，因为有没有医保的价格是不一样的。身体健康的情况怎么样，除了感冒发烧之外还有其他在医院就诊过的记录或者体检的记录吗？' }
+        ]
+      },
+      {
+        id: 'sc-7',
+        title: '客户上来就要方案',
+        subtitle: '不想沟通直接要方案',
+        content: [
+          { type: 'info', label: '应对策略', text: '亲，您应该是在网上看过了一些产品，但是每个家庭每个人不一样，还要具体去看。网上的一些信息不能全信，很多是博眼球的东西，有些内容比较片面。' },
+          { type: 'info', label: '讲解配置逻辑', text: '我给您简单讲下如何合理的配置保障（8 个对）。' },
+          { type: 'info', label: '衔接服务', text: '讲解完毕后，再衔接上咱们的服务讲解，展示服务优势。' }
+        ]
+      },
+      {
+        id: 'sc-8',
+        title: '客户问到了你不会的问题',
+        subtitle: '知识盲区应对',
+        content: [
+          { type: 'info', label: '应对策略', text: '先做宽泛的回答，下次讲方案或者首通结束后再做补充性回答。' },
+          { type: 'info', label: '示例', text: '客户说我三年前买的重疾险，你帮我看看怎么样。我们没听过的，记下来名字；可以说，那应该价格不低吧，您花了多少钱买了多少保额，我这两天给你对比一下，下次给您讲方案的时候先给您说一下这个产品的优劣势。' }
+        ]
+      },
+      {
+        id: 'sc-9',
+        title: '客户是非标体',
+        subtitle: '健康状况有异常',
+        content: [
+          { type: 'info', label: '告知客户', text: '告知客户体况有异常的情况下，会根据保险公司的判断。如果问题较小能够正常投保，如果异常情况稍微严重，可能会针对部分疾病除外，或者是直接拒保。' },
+          { type: 'info', label: '核保策略', text: '我们会根据客户的健康情况，去向保险公司申请投保，最终是否能投要看保险公司是否接受。能可能会除外，可能会拒保。尽量找性价比高的看看能不能保，如果不行再去找宽松的，再去找不除外的；百万医疗要看保证续保时间。' },
+          { type: 'info', label: '核保不留痕', text: '请客户放心平台上产品众多，会尽全力争取最优的核保条件。（核保不留痕）' }
+        ]
+      },
+      {
+        id: 'sc-10',
+        title: '客户没有耐心',
+        subtitle: '客户想要快速了解',
+        content: [
+          { type: 'info', label: '强调专业性', text: '因为保险也是非常重要的，陪伴咱们终身的，您来咨询我，我也得对您负责，不能随便给您推荐。希望我给您做的风险管理规划，能辅助着您的小家庭一直幸福下去，而不是因为保险没买对反而添堵。' },
+          { type: 'info', label: '案例警示', text: '因为我们也经常遇到保险没买对的客户，钱没少花，但保障确实不怎么样，哪怕您最后不配置了也没关系，能帮到您就好。' },
+          { type: 'info', label: '突出稀缺性', text: '可以表明虽然名额对于客户来说是免费的，实际上是平台付过费的，突出咨询的稀缺。' }
+        ]
+      },
+      {
+        id: 'sc-11',
+        title: '客户只是想先了解一下',
+        subtitle: '观望心态',
+        content: [
+          { type: 'quote', label: '认同客户', text: '这个理解的，其实很多人跟您都是一样，在没了解清楚前是不会落实下来的，没关系，我们的服务理念是向善利他，能帮到您就好，不强制您购买。' },
+          { type: 'info', label: '正常化', text: '其实有很多家庭朋友也会和您一样，一开始也是抱着学习了解一下的心态来体验我们保障规划服务的。' },
+          { type: 'info', label: '引导投入', text: '学习其实就是为了解决生活中的问题，所以最好的学习方式就是，全身心的投入到我们这次的保障规划服务中。在这个过程中我可以解决很多您之前不太了解的保障知识，也一定会让您的时间花的值得。' },
+          { type: 'info', label: '后续跟进', text: '方案只有在落实的时候才有意义，不然我们让您非常清楚地知道了您家庭的风险之后，并没有采取行动还是一直处在风险之中。您不免会一直担心自己家庭的保障缺口，影响自己的生活和工作，那还不如尽快落实好自己的方案，然后一身轻松，安安心心地工作生活，多好呀。' }
+        ]
+      },
+      {
+        id: 'sc-12',
+        title: '客户上来就只想了解某个险种',
+        subtitle: '只聚焦单一险种',
+        content: [
+          { type: 'info', label: '认同需求', text: '您想给孩子配置医疗保障没问题，做父母的都想着优先为孩子考虑。我会先给您讲一下孩子保险配置的基本方法和逻辑，我们达成共识了之后，再帮您去做一些产品上的推荐。' },
+          { type: 'info', label: '引导全面认知', text: '不过想跟您说的是，咱家过往对于保险的了解可能不太多，既然您找到我了，其实是个很好的机会了解家里面的财富风险应该怎样管理。因为保险实际就是管理财富的，不是买了保险就不生病了，而是保险可以在少投入的情况下把大额支出的风险进行转移。' },
+          { type: 'info', label: '提供全面诊断', text: '我们的专业是为整个家庭进行分析，正好借本次咨询的机会，我给您整个家庭也做一个全面的诊断。当然最后还是会落脚到孩子的问题上，您觉得怎么样。' }
+        ]
+      },
+      {
+        id: 'sc-13',
+        title: '客户觉得网上买有点不放心',
+        subtitle: '信任顾虑',
+        content: [
+          { type: 'quote', label: '认同顾虑', text: '非常能理解您的顾虑，您是不是主要担心网上买保险，合同没效力，后续理赔不顺畅？' },
+          { type: 'info', label: '互联网优势', text: '如今是互联网时代，线上渠道往往藏着性价比更高的方案与服务。您身边或许也有做保险的亲戚朋友，但真正能精准契合您需求、定制高性价比方案的，其实没几个。不少年轻人特认可互联网保险咨询，高效又省心。' },
+          { type: 'info', label: '案例佐证', text: '甚至还有在国外生活的朋友也通过我们做一些高端医疗的规划及协助理赔。像我有些同城客户，约见面都觉得没必要，大家都忙，路上来回一两个小时太折腾。' },
+          { type: 'info', label: '理赔保障', text: '要是担心理赔，这更好办。我们在全国设有 30 多家分公司、200 多个理赔网点，全力协助您理赔，站在您这边争取权益。之前有位客户，买的其他公司保险，以为理赔不了，多亏我们专业理赔人员出手，顺利帮他拿到理赔款。（好赔案例）' }
+        ]
+      }
+    ]
+  },
+  // ---- 二通 ----
+  {
+    id: 'flow2',
+    group: '二通',
+    icon: '&#128222;',
+    title: '二通流程',
+    tagClass: 'flow',
+    badgeClass: 'flow',
+    tagColor: 'tag-flow',
+    desc: '二次通话的完整流程步骤',
+    type: 'flow',
+    empty: true,
+    items: []
+  },
+  {
+    id: 'knowledge2',
+    group: '二通',
+    icon: '&#128218;',
+    title: '二通常用工具和知识',
+    tagClass: 'knowledge',
+    badgeClass: 'knowledge',
+    tagColor: 'tag-knowledge',
+    desc: '二通中常用的保险知识讲解工具',
+    type: 'cards',
+    empty: true,
+    items: []
+  },
+  {
+    id: 'qa2',
+    group: '二通',
+    icon: '&#10067;',
+    title: '二通常见客户问题',
+    tagClass: 'qa',
+    badgeClass: 'qa',
+    tagColor: 'tag-qa',
+    desc: '二次沟通中客户最常提出的问题及应答',
+    type: 'cards',
+    empty: true,
+    items: []
+  },
+  {
+    id: 'scene2',
+    group: '二通',
+    icon: '&#127919;',
+    title: '二通场景应对',
+    tagClass: 'scene',
+    badgeClass: 'scene',
+    tagColor: 'tag-scene',
+    desc: '二通中可能遇到的各种客户场景及应对策略',
+    type: 'cards',
+    empty: true,
+    items: []
+  },
+  // ---- 三通 ----
+  {
+    id: 'flow3',
+    group: '三通',
+    icon: '&#128222;',
+    title: '三通流程',
+    tagClass: 'flow',
+    badgeClass: 'flow',
+    tagColor: 'tag-flow',
+    desc: '第三次通话的完整流程步骤',
+    type: 'flow',
+    empty: true,
+    items: []
+  },
+  {
+    id: 'knowledge3',
+    group: '三通',
+    icon: '&#128218;',
+    title: '三通常用工具和知识',
+    tagClass: 'knowledge',
+    badgeClass: 'knowledge',
+    tagColor: 'tag-knowledge',
+    desc: '三通中常用的保险知识讲解工具',
+    type: 'cards',
+    empty: true,
+    items: []
+  },
+  {
+    id: 'qa3',
+    group: '三通',
+    icon: '&#10067;',
+    title: '三通常见客户问题',
+    tagClass: 'qa',
+    badgeClass: 'qa',
+    tagColor: 'tag-qa',
+    desc: '三次沟通中客户最常提出的问题及应答',
+    type: 'cards',
+    empty: true,
+    items: []
+  },
+  {
+    id: 'scene3',
+    group: '三通',
+    icon: '&#127919;',
+    title: '三通场景应对',
+    tagClass: 'scene',
+    badgeClass: 'scene',
+    tagColor: 'tag-scene',
+    desc: '三通中可能遇到的各种客户场景及应对策略',
+    type: 'cards',
+    empty: true,
+    items: []
+  }
+];
+
+// ============================================================
+//  STATE
+// ============================================================
+let activeSection = SECTIONS[0].id;
+let expandedSectionId = activeSection; // only one section expanded at a time in sidebar tree
+let allExpanded = false;
+let favOnly = false;
+let isSearchMode = false;
+let sidebarSearchActive = false;
+const favorites = new Set(JSON.parse(localStorage.getItem('ins-favs') || '[]'));
+
+// ============================================================
+//  RENDER SECTION TABS
+// ============================================================
+function renderSidebarTree() {
+  const tree = document.getElementById('sidebarTree');
+  if (sidebarSearchActive) return; // sidebar search results handle their own rendering
+  const groups = ['首通', '二通', '三通'];
+  let html = '';
+  groups.forEach(group => {
+    const groupSections = SECTIONS.filter(s => s.group === group);
+    if (groupSections.length === 0) return;
+    html += `<div class="tree-group">`;
+    html += `<div class="tree-group-header">${group}</div>`;
+    groupSections.forEach(sec => {
+      const isActive = sec.id === activeSection;
+      const isFlow = sec.type === 'flow';
+      const isExpanded = !isFlow && expandedSectionId === sec.id;
+      const isEmpty = sec.empty || !sec.items || sec.items.length === 0;
+      const emptyCls = isEmpty ? 'empty' : '';
+      html += `<div class="section-node ${isActive ? 'active' : ''} ${isExpanded ? 'expanded' : ''} ${emptyCls}" data-section="${sec.id}" data-tag-color="${sec.tagColor}">`;
+      // Flow sections: clicking title just switches page; no accordion, no children
+      html += `<div class="section-header" onclick="${isFlow ? `switchSection('${sec.id}')` : `toggleSectionExpand('${sec.id}')`}">`;
+      // No triangle arrow; left accent indicator is shown via CSS border-left
+      html += `<span class="section-icon">${sec.icon}</span>`;
+      html += `<span class="section-title">${sec.title}</span>`;
+      html += `<span class="section-count">${collectAllItems(sec).length}</span>`;
+      html += `</div>`;
+      // Children: only for non-flow sections
+      if (!isFlow) {
+        html += `<div class="section-children">`;
+        if (isEmpty) {
+          html += `<div class="nav-search-empty" style="padding-left:46px">该板块暂无内容</div>`;
+        } else {
+          html += `<ul class="nav-items">`;
+          sec.items.forEach(item => {
+            const isFav = favorites.has(item.id) ? 'favorited' : '';
+            html += `<li class="nav-item ${isFav}" data-item-id="${item.id}">`;
+            html += `<div class="nav-item-row">`;
+            html += `<div class="nav-item-header" onclick="scrollToItem('${item.id}')">`;
+            html += `<span class="tag-dot ${sec.tagColor}"></span>`;
+            html += `<span class="nav-item-title">${item.title}</span>`;
+            html += `</div>`;
+            html += `<span class="fav-star">&#9733;</span>`;
+            html += `</div>`;
+            html += `</li>`;
+          });
+          html += `</ul>`;
+        }
+        html += `</div>`; // end section-children
+      }
+      html += `</div>`; // end section-node
+    });
+    html += `</div>`;
+  });
+  tree.innerHTML = html;
+}
+
+function toggleSectionExpand(sectionId) {
+  const sec = SECTIONS.find(s => s.id === sectionId);
+  if (!sec) return;
+  const isEmpty = sec.empty || !sec.items || sec.items.length === 0;
+  if (isEmpty) {
+    // Empty sections still switch active state but do not expand
+    switchSection(sectionId);
+    return;
+  }
+  // If switching to a different section, make it active and expand
+  if (activeSection !== sectionId) {
+    activeSection = sectionId;
+    expandedSectionId = sectionId;
+    // Update header subtitle
+    const headerSub = document.getElementById('headerSub');
+    if (headerSub) headerSub.textContent = '/ ' + sec.title;
+    // Update pages
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(`page-${sectionId}`)?.classList.add('active');
+    // Clear sidebar search and search mode
+    const sbSearch = document.getElementById('sidebarSearch');
+    const sbClear = document.getElementById('sidebarSearchClear');
+    if (sbSearch) { sbSearch.value = ''; }
+    if (sbClear) { sbClear.style.display = 'none'; }
+    sidebarSearchActive = false;
+    if (isSearchMode) exitSearchMode();
+    renderSidebarTree();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+  // Same section: toggle expand/collapse (hand accordion: only one open at a time)
+  if (expandedSectionId === sectionId) {
+    expandedSectionId = null;
+  } else {
+    expandedSectionId = sectionId;
+  }
+  renderSidebarTree();
+}
+
+// ============================================================
+//  RENDER MAIN CONTENT (pages)
+// ============================================================
+function renderMain() {
+  const main = document.getElementById('mainContent');
+  let html = '';
+
+  // Stats bar — group level
+  const totalItems = SECTIONS.reduce((s, sec) => s + collectAllItems(sec).length, 0);
+  html += `<div class="stats-bar">`;
+  const statGroups = [['首通','flow'], ['二通','qa'], ['三通','scene']];
+  statGroups.forEach(([groupName, statCls]) => {
+    const groupSections = SECTIONS.filter(s => s.group === groupName);
+    const groupTotal = groupSections.reduce((sum, s) => sum + collectAllItems(s).length, 0);
+    html += `<div class="stat-item stat-${statCls}">`;
+    html += `<span class="stat-num">${groupTotal}</span>`;
+    html += `<span class="stat-label">${groupName}</span>`;
+    html += `</div>`;
+  });
+  html += `<div class="stat-item"><span class="stat-num">${totalItems}</span><span class="stat-label">总计</span></div>`;
+  html += `</div>`;
+
+  // Section pages
+  SECTIONS.forEach(sec => {
+    const active = sec.id === activeSection ? 'active' : '';
+    html += `<div class="page ${active}" id="page-${sec.id}">`;
+    html += renderSectionContent(sec);
+    html += `</div>`;
+  });
+
+  // Search results page (hidden by default)
+  html += `<div class="page" id="page-search"></div>`;
+
+  main.innerHTML = html;
+  attachCardListeners();
+}
+
+function renderSectionContent(sec) {
+  let html = '';
+  // Section title
+  html += `<div class="section-title-block">`;
+  html += `<h2>${sec.icon} ${sec.title} <span class="card-badge ${sec.badgeClass}">${sec.desc}</span></h2>`;
+  html += `</div>`;
+
+  // Empty section placeholder
+  if (sec.empty || !sec.items || sec.items.length === 0) {
+    html += `<div class="empty-section">`;
+    html += `<div class="empty-icon">&#128221;</div>`;
+    html += `<h3>内容整理中</h3>`;
+    html += `<p>该板块的内容正在整理中，敬请期待</p>`;
+    html += `<p class="empty-hint">后续整理好内容后可直接在此板块录入</p>`;
+    html += `</div>`;
+    return html;
+  }
+
+  if (sec.type === 'flow') {
+    html += `<div class="flow-container">`;
+    html += renderFlowSteps(sec.items, sec, [], true);
+    html += `</div>`;
+  } else {
+    html += `<div class="card-group">`;
+    sec.items.forEach(item => {
+      html += renderCard(item, sec);
+    });
+    html += `</div>`;
+  }
+  return html;
+}
+
+function renderFlowSteps(items, sec, path, isTop) {
+  let html = '';
+  items.forEach((item, idx) => {
+    const numPath = path.concat(idx + 1);
+    const numStr = numPath.join('.');
+    const hasChildren = item.children && item.children.length > 0;
+    const isLast = idx === items.length - 1;
+    const level = numPath.length;
+    const cls = `flow-step${isTop ? '' : ' flow-step-child'}${hasChildren ? ' flow-step-parent' : ''}`;
+    html += `<div class="${cls}" id="${item.id}" data-item-id="${item.id}" data-section="${sec.id}" data-level="${level}">`;
+    html += `<div class="step-marker">`;
+    html += `<div class="step-num">${numStr}</div>`;
+    if (!isLast) html += `<div class="step-line"></div>`;
+    html += `</div>`;
+    html += `<div class="step-content">`;
+    html += `<div class="step-card${hasChildren ? ' phase-card' : ''}${level > 1 ? ' step-card-compact' : ''}">`;
+    html += `<div class="step-card-header">`;
+    html += `<h3>${item.title}</h3>`;
+    if (item.subtitle) html += `<div class="step-subtitle">${item.subtitle}</div>`;
+    html += `</div>`;
+    if (item.content && item.content.length) {
+      html += `<div class="step-body">`;
+      item.content.forEach(block => { html += renderBlock(block, sec); });
+      html += `</div>`;
+    }
+    html += `</div>`; // .step-card
+    if (hasChildren) {
+      html += `<div class="flow-children">`;
+      html += renderFlowSteps(item.children, sec, numPath, false);
+      html += `</div>`;
+    }
+    html += `</div>`; // .step-content
+    html += `</div>`; // .flow-step
+  });
+  return html;
+}
+
+// Flatten all items (including nested children) within a section
+function collectAllItems(sec) {
+  const out = [];
+  (function walk(list) {
+    (list || []).forEach(it => {
+      out.push(it);
+      if (it.children) walk(it.children);
+    });
+  })(sec.items);
+  return out;
+}
+
+function renderCard(item, sec) {
+  const isFav = favorites.has(item.id) ? 'favorited' : '';
+  let html = `<div class="card ${isFav}" id="${item.id}" data-item-id="${item.id}" data-section="${sec.id}">`;
+  html += `<div class="card-header">`;
+  html += `<span class="card-tag ${sec.tagColor}"></span>`;
+  html += `<div class="card-title-wrap">`;
+  html += `<div class="card-title">${item.title}</div>`;
+  if (item.subtitle) html += `<div class="card-subtitle">${item.subtitle}</div>`;
+  html += `</div>`;
+  html += `<div class="card-actions">`;
+  html += `<button class="card-fav-btn" data-fav-id="${item.id}" title="收藏">&#9733;</button>`;
+  html += `<span class="card-badge ${sec.badgeClass}">${sec.title}</span>`;
+  html += `<span class="card-expand-icon">&#9654;</span>`;
+  html += `</div></div>`;
+  html += `<div class="card-body"><div class="card-body-inner">`;
+  (item.content || []).forEach(block => {
+    html += renderBlock(block, sec);
+  });
+  html += `</div></div></div>`;
+  return html;
+}
+
+function renderBlock(block, sec) {
+  let html = '';
+  if (block.type === 'info') {
+    html += `<div class="info-block">`;
+    if (block.label) html += `<span class="info-label">${block.label}</span>`;
+    if (block.text) html += `<p>${block.text}</p>`;
+    if (block.items) {
+      const colCls = block.items.length > 5 ? ' class="two-col"' : '';
+      html += `<ul${colCls}>`;
+      block.items.forEach(it => { html += `<li>${it}</li>`; });
+      html += `</ul>`;
+    }
+    html += `</div>`;
+  } else if (block.type === 'quote') {
+    html += `<div class="quote-block">`;
+    if (block.label) html += `<span class="quote-label">${block.label}</span>`;
+    html += `<p>${block.text}</p>`;
+    html += `</div>`;
+  } else if (block.type === 'script') {
+    html += `<div class="script-block">`;
+    if (block.label) html += `<span class="script-label">${block.label}</span>`;
+    html += `<p>${block.text}</p>`;
+    html += `</div>`;
+  } else if (block.type === 'outline') {
+    html += `<div class="outline-block">`;
+    if (block.label) html += `<span class="outline-label">${block.label}</span>`;
+    html += renderOutlineItems(block.items);
+    html += `</div>`;
+  }
+  return html;
+}
+
+function renderOutlineItems(items) {
+  if (!items || items.length === 0) return '';
+  let html = '<ul class="outline-list">';
+  items.forEach(it => {
+    html += `<li><span class="outline-text">${it.text}</span>`;
+    if (it.items && it.items.length) html += renderOutlineItems(it.items);
+    html += `</li>`;
+  });
+  html += '</ul>';
+  return html;
+}
+
+// ============================================================
+//  SWITCH SECTION (page navigation)
+// ============================================================
+function switchSection(sectionId) {
+  if (isSearchMode) exitSearchMode();
+  // Clear sidebar search
+  const sbSearch = document.getElementById('sidebarSearch');
+  const sbClear = document.getElementById('sidebarSearchClear');
+  if (sbSearch) { sbSearch.value = ''; }
+  if (sbClear) { sbClear.style.display = 'none'; }
+  sidebarSearchActive = false;
+
+  activeSection = sectionId;
+  expandedSectionId = sectionId;
+  const sec = SECTIONS.find(s => s.id === sectionId);
+  // Update header subtitle
+  const headerSub = document.getElementById('headerSub');
+  if (headerSub && sec) headerSub.textContent = '/ ' + sec.title;
+  // Update pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(`page-${sectionId}`)?.classList.add('active');
+  // Re-render sidebar tree
+  renderSidebarTree();
+  // Close mobile sidebar
+  if (window.innerWidth <= 900) {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('show');
+  }
+  // Reset scroll
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================================
+//  CARD INTERACTIONS
+// ============================================================
+function attachCardListeners() {
+  document.querySelectorAll('.card-header').forEach(header => {
+    header.addEventListener('click', (e) => {
+      if (e.target.closest('.card-fav-btn')) return;
+      const card = header.closest('.card');
+      card.classList.toggle('expanded');
+    });
+  });
+  document.querySelectorAll('.card-fav-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.favId;
+      toggleFavorite(id, btn);
+    });
+  });
+}
+
+function toggleFavorite(id, btn) {
+  const card = btn.closest('.card');
+  const navItem = document.querySelector(`.nav-item[data-item-id="${id}"]`);
+  if (favorites.has(id)) {
+    favorites.delete(id);
+    card?.classList.remove('favorited');
+    navItem?.classList.remove('favorited');
+  } else {
+    favorites.add(id);
+    card?.classList.add('favorited');
+    navItem?.classList.add('favorited');
+  }
+  localStorage.setItem('ins-favs', JSON.stringify([...favorites]));
+  updateFavCount();
+  if (favOnly && isSearchMode) applySearchFilters();
+}
+
+function updateFavCount() {
+  const countEl = document.getElementById('favCount');
+  const count = favorites.size;
+  countEl.textContent = count;
+  countEl.style.display = count > 0 ? 'inline' : 'none';
+  const btn = document.getElementById('favFilterBtn');
+  if (favOnly) btn.classList.add('active');
+  else btn.classList.remove('active');
+}
+
+// ============================================================
+//  SCROLL TO ITEM (within active section)
+// ============================================================
+function scrollToItem(id) {
+  // Find which section this item belongs to
+  let targetSection = null;
+  for (const sec of SECTIONS) {
+    if (collectAllItems(sec).some(it => it.id === id)) {
+      targetSection = sec.id;
+      break;
+    }
+  }
+  // Switch section if needed (also expands section and updates tree)
+  if (targetSection && targetSection !== activeSection) {
+    switchSection(targetSection);
+    setTimeout(() => doScrollToItem(id), 350);
+  } else {
+    doScrollToItem(id);
+  }
+}
+
+function doScrollToItem(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  // Auto expand
+  const card = el.closest('.card');
+  if (card && !card.classList.contains('expanded')) {
+    card.classList.add('expanded');
+  }
+  // Scroll
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Highlight
+  setTimeout(() => {
+    if (card) {
+      card.style.boxShadow = '0 0 0 2px var(--accent-blue)';
+      setTimeout(() => { card.style.boxShadow = ''; }, 1500);
+    }
+  }, 300);
+  // Close mobile sidebar
+  if (window.innerWidth <= 900) {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('show');
+  }
+  // Update active nav
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navItem = document.querySelector(`.nav-item[data-item-id="${id}"]`);
+  navItem?.classList.add('active');
+}
+
+// ============================================================
+//  SEARCH (cross-section, unified results page)
+// ============================================================
+const searchInput = document.getElementById('searchInput');
+const clearBtn = document.getElementById('clearSearch');
+
+searchInput.addEventListener('input', (e) => {
+  const q = e.target.value.trim().toLowerCase();
+  clearBtn.style.display = q ? 'block' : 'none';
+  if (q) {
+    enterSearchMode();
+    performSearch(q, favOnly);
+  } else {
+    exitSearchMode();
+  }
+});
+
+clearBtn.addEventListener('click', () => {
+  searchInput.value = '';
+  clearBtn.style.display = 'none';
+  exitSearchMode();
+  searchInput.focus();
+});
+
+function enterSearchMode() {
+  if (isSearchMode) return;
+  isSearchMode = true;
+  // Hide all section pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  // Show search page
+  document.getElementById('page-search').classList.add('active');
+  // Hide stats bar
+  document.querySelector('.stats-bar').style.display = 'none';
+}
+
+function exitSearchMode() {
+  if (!isSearchMode) return;
+  isSearchMode = false;
+  // Hide search page
+  document.getElementById('page-search').classList.remove('active');
+  // Show active section page
+  document.getElementById(`page-${activeSection}`)?.classList.add('active');
+  // Show stats bar
+  document.querySelector('.stats-bar').style.display = '';
+  // Clear search page content
+  document.getElementById('page-search').innerHTML = '';
+}
+
+function performSearch(query, favsOnly) {
+  const searchPage = document.getElementById('page-search');
+  let html = '';
+  let totalMatches = 0;
+  let sectionResults = [];
+
+  // Search across all sections (skip empty)
+  SECTIONS.forEach(sec => {
+    if (sec.empty || !sec.items || sec.items.length === 0) return;
+    let matchedItems = [];
+    collectAllItems(sec).forEach(item => {
+      // Skip non-favorited if favOnly
+      if (favsOnly && !favorites.has(item.id)) return;
+      // Build searchable text
+      let searchText = item.title + ' ' + (item.subtitle || '');
+      if (item.content) {
+        item.content.forEach(block => {
+          if (block.label) searchText += ' ' + block.label;
+          if (block.text) searchText += ' ' + block.text;
+          if (block.items) searchText += ' ' + block.items.join(' ');
+        });
+      }
+      searchText = searchText.toLowerCase();
+      if (searchText.includes(query)) {
+        matchedItems.push({ item, score: searchText.split(query).length - 1 });
+      }
+    });
+    if (matchedItems.length > 0) {
+      totalMatches += matchedItems.length;
+      sectionResults.push({ sec, matchedItems });
+    }
+  });
+
+  // Header
+  html += `<div class="search-results-header">`;
+  html += `<h2>&#128269; 搜索结果</h2>`;
+  html += `<div class="meta">关键词: "<strong style="color:var(--accent-orange)">${query}</strong>" — 共 ${totalMatches} 条结果${favsOnly ? ' (仅收藏)' : ''}</div>`;
+  html += `</div>`;
+
+  if (totalMatches === 0) {
+    html += `<div class="no-results"><div class="icon">&#128269;</div>`;
+    html += `<p>未找到包含"<strong style="color:var(--accent-orange)">${query}</strong>"的内容${favsOnly ? '（仅搜索已收藏）' : ''}</p></div>`;
+    searchPage.innerHTML = html;
+    return;
+  }
+
+  // Render results grouped by section
+  sectionResults.forEach(({ sec, matchedItems }) => {
+    html += `<div class="search-section-group">`;
+    html += `<div class="search-section-label">${sec.icon} ${sec.title} <span style="color:var(--text-muted)">(${matchedItems.length})</span></div>`;
+    matchedItems.forEach(({ item }) => {
+      html += renderCard(item, sec);
+    });
+    html += `</div>`;
+  });
+
+  searchPage.innerHTML = html;
+
+  // Auto-expand all cards and highlight
+  searchPage.querySelectorAll('.card').forEach(card => {
+    card.classList.add('expanded');
+    if (query) highlightInElement(card, query);
+  });
+
+  // Re-attach card listeners
+  searchPage.querySelectorAll('.card-header').forEach(header => {
+    header.addEventListener('click', (e) => {
+      if (e.target.closest('.card-fav-btn')) return;
+      header.closest('.card').classList.toggle('expanded');
+    });
+  });
+  searchPage.querySelectorAll('.card-fav-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleFavorite(btn.dataset.favId, btn);
+    });
+  });
+}
+
+function applySearchFilters() {
+  const q = searchInput.value.trim().toLowerCase();
+  if (q) performSearch(q, favOnly);
+}
+
+function highlightInElement(el, query) {
+  if (!query) return; // guard against empty-string infinite loop
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+  const texts = [];
+  let node;
+  while (node = walker.nextNode()) {
+    if (node.parentElement && !['SCRIPT','STYLE'].includes(node.parentElement.tagName)) {
+      texts.push(node);
+    }
+  }
+  texts.forEach(textNode => {
+    const text = textNode.textContent;
+    const lower = text.toLowerCase();
+    let idx = lower.indexOf(query);
+    if (idx >= 0) {
+      const frag = document.createDocumentFragment();
+      let last = 0;
+      while (idx >= 0) {
+        if (idx > last) frag.appendChild(document.createTextNode(text.substring(last, idx)));
+        const span = document.createElement('span');
+        span.className = 'highlight';
+        span.textContent = text.substring(idx, idx + query.length);
+        frag.appendChild(span);
+        last = idx + query.length;
+        idx = lower.indexOf(query, last);
+      }
+      if (last < text.length) frag.appendChild(document.createTextNode(text.substring(last)));
+      textNode.parentElement.replaceChild(frag, textNode);
+    }
+  });
+}
+
+// ============================================================
+//  EXPAND / COLLAPSE ALL (active page only)
+// ============================================================
+document.getElementById('expandAllBtn').addEventListener('click', () => {
+  const activePage = document.querySelector('.page.active');
+  if (!activePage) return;
+  const cards = activePage.querySelectorAll('.card');
+  allExpanded = !allExpanded;
+  cards.forEach(c => {
+    if (allExpanded) c.classList.add('expanded');
+    else c.classList.remove('expanded');
+  });
+  document.getElementById('expandIcon').textContent = allExpanded ? '\u25B2' : '\u25BC';
+  const btn = document.getElementById('expandAllBtn');
+  btn.querySelector('.btn-text').textContent = allExpanded ? '全部折叠' : '全部展开';
+});
+
+// ============================================================
+//  FAV FILTER
+// ============================================================
+document.getElementById('favFilterBtn').addEventListener('click', () => {
+  favOnly = !favOnly;
+  updateFavCount();
+  const hasTextQuery = searchInput.value.trim() !== '';
+  if (favOnly) {
+    if (!isSearchMode) enterSearchMode();
+    if (hasTextQuery) applySearchFilters();
+    else performSearch('', true);
+  } else {
+    if (isSearchMode) {
+      if (hasTextQuery) applySearchFilters();
+      else exitSearchMode();
+    }
+  }
+});
+
+// ============================================================
+//  BACK TO TOP
+// ============================================================
+const backToTop = document.getElementById('backToTop');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 400) backToTop.classList.add('show');
+  else backToTop.classList.remove('show');
+});
+backToTop.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// ============================================================
+//  MOBILE SIDEBAR
+// ============================================================
+document.getElementById('sidebarToggle').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('show');
+});
+document.getElementById('sidebarOverlay').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('show');
+});
+
+// ============================================================
+//  SIDEBAR DIRECTORY SEARCH
+// ============================================================
+const sidebarSearchInput = document.getElementById('sidebarSearch');
+const sidebarSearchClear = document.getElementById('sidebarSearchClear');
+
+sidebarSearchInput.addEventListener('input', (e) => {
+  const q = e.target.value.trim().toLowerCase();
+  sidebarSearchClear.style.display = q ? 'block' : 'none';
+  if (q) {
+    sidebarSearchActive = true;
+    renderSidebarSearchResults(q);
+  } else {
+    sidebarSearchActive = false;
+    renderSidebarTree();
+  }
+});
+
+sidebarSearchClear.addEventListener('click', () => {
+  sidebarSearchInput.value = '';
+  sidebarSearchClear.style.display = 'none';
+  sidebarSearchActive = false;
+  renderSidebarTree();
+  sidebarSearchInput.focus();
+});
+
+function renderSidebarSearchResults(query) {
+  const tree = document.getElementById('sidebarTree');
+  expandedSectionId = null;
+  let html = '';
+  let totalMatches = 0;
+
+  const groups = ['首通', '二通', '三通'];
+  groups.forEach(group => {
+    const groupSections = SECTIONS.filter(s => s.group === group);
+    let groupMatches = [];
+
+    groupSections.forEach(sec => {
+      if (sec.empty || !sec.items || sec.items.length === 0) return;
+      collectAllItems(sec).forEach(item => {
+        const searchText = (item.title + ' ' + (item.subtitle || '')).toLowerCase();
+        if (searchText.includes(query)) {
+          groupMatches.push({ item, sec });
+          totalMatches++;
+        }
+      });
+    });
+
+    if (groupMatches.length > 0) {
+      html += `<div class="nav-search-group-label">${group} (${groupMatches.length})</div>`;
+      html += `<ul class="nav-items">`;
+      groupMatches.forEach(({ item, sec }) => {
+        const isFav = favorites.has(item.id) ? 'favorited' : '';
+        html += `<li class="nav-item ${isFav}" data-item-id="${item.id}">`;
+        html += `<div class="nav-item-row">`;
+        html += `<div class="nav-item-header" onclick="scrollToItem('${item.id}')">`;
+        html += `<span class="tag-dot ${sec.tagColor}"></span>`;
+        html += `<span class="nav-item-title">${item.title}</span>`;
+        html += `</div>`;
+        html += `<span class="fav-star">&#9733;</span>`;
+        html += `</div>`;
+        html += `</li>`;
+      });
+      html += `</ul>`;
+    }
+  });
+
+  if (totalMatches === 0) {
+    tree.innerHTML = `<div class="nav-search-empty">未找到匹配的目录条目</div>`;
+  } else {
+    tree.innerHTML = html;
+  }
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+renderSidebarTree();
+renderMain();
+updateFavCount();
+</script>
+</body>
+</html>
